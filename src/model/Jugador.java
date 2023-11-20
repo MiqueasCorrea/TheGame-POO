@@ -2,11 +2,12 @@ package model;
 
 public class Jugador {
     private String nombre;
-    Carta carta1;
-    Carta carta2;
-
+    private Carta carta1;
+    private Carta carta2;
+    private int cantidadCartasTiradas;
     public Jugador(String nombre) {
         this.nombre = nombre;
+        cantidadCartasTiradas = 0;
     }
 
     public String getNombre() {
@@ -31,5 +32,16 @@ public class Jugador {
 
     public void setSegundaCartaDelJugador(Carta carta2){
         this.carta2 = carta2;
+    }
+
+    public void setCantidadCartasTiradas(int cantidadCartasTiradas){
+        this.cantidadCartasTiradas = cantidadCartasTiradas;
+    }
+
+    public void incrementarCartasTiradas(){
+        this.cantidadCartasTiradas += 1;
+    }
+    public int getCantidadCartasTiradas(){
+        return this.cantidadCartasTiradas;
     }
 }

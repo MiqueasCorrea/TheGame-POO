@@ -84,8 +84,10 @@ public class VistaConsola extends JFrame implements IVista{
             public void actionPerformed(ActionEvent e) {
                 String opcionElegida = textField.getText();
                 if (opcionElegida.equals("1")){
+                    limpiarTextoTextField();
                     mostrarElegirJugador();
                 } else if (opcionElegida.equals("2")){
+                    limpiarTextoTextField();
                     estado = Estados.EN_BUSCAR_PARTIDA;
                     mostrarBuscarPartidas();
                 } else if (opcionElegida.equals("3")){
@@ -105,6 +107,7 @@ public class VistaConsola extends JFrame implements IVista{
             public void actionPerformed(ActionEvent e) {
                 if (textField.getText().equals("2") || textField.getText().equals("3") || textField.getText().equals("4") || textField.getText().equals("5")){
                     cantidadJugadoresPartida = Integer.parseInt(textField.getText());
+                    limpiarTextoTextField();
                     crearPartida();
                 }
                 if (textField.getText().equals("6")){
@@ -169,21 +172,21 @@ public class VistaConsola extends JFrame implements IVista{
         nueva_partida.agregarJugador(controlador.getJugador());
         controlador.getModelo().notificarObservers(nueva_partida, Eventos.CAMBIO_LISTA_ESPERA);
         mostrarEsperandoJugadores(nueva_partida);
+
     }
     @Override
-    public void mostrarEsperandoJugadores(Partida nueva_partida){
+    public void mostrarEsperandoJugadores(Partida partida){
         eliminarActionListeners();
         subtitulo.setText("Esperando Jugadores");
-        textArea.setText("Jugadores necesarios: " + nueva_partida.getCantidadJugadoresEnLaPartida() + "/" + cantidadJugadoresPartida + "\n\n-Jugadores en la sala: \n");
-        for (Jugador jugador : nueva_partida.getJugadores_en_la_partida()){
+        textArea.setText("Jugadores necesarios: " + partida.getCantidadJugadoresEnLaPartida() + "/" + cantidadJugadoresPartida + "\n\n-Jugadores en la sala: \n");
+        for (Jugador jugador : partida.getJugadores_en_la_partida()){
             textArea.append("- " + jugador.getNombre() + "\n");
         }
 
-        if (nueva_partida.getCantidadJugadoresEnLaPartida() >= cantidadJugadoresPartida){
+        if (partida.getCantidadJugadoresEnLaPartida() >= cantidadJugadoresPartida){
             textArea.append("\n\nSALA LLENA\n");
             textArea.append("El juego empezará pronto");
-
-            empezarPartida(nueva_partida);
+            empezarPartida(partida);
         }
     }
 
@@ -218,7 +221,6 @@ public class VistaConsola extends JFrame implements IVista{
                         partida.agregarJugador(controlador.getJugador());
                         estado = Estados.EN_SALA_ESPERA;
                         controlador.getModelo().notificarObservers(partida, Eventos.SE_UNIO_JUGADOR);
-                        eliminarActionListeners();
                     }
                 } catch (NumberFormatException ex){
                     System.err.println("NÚMERO INVALIDO");
@@ -237,68 +239,154 @@ public class VistaConsola extends JFrame implements IVista{
     @Override
     public void empezarPartida(Partida partida){
         estado = Estados.EN_JUEGO;
-        subtitulo.setText("Partida en Juego");
-        repartirCartas(partida);
+        subtitulo.setText("Partida en Juego - Jugador " + controlador.getJugador().getNombre());
+        if (!partida.getRepartidas()){
+            System.out.println("TEST, SE REPARTIERON");
+            repartirCartas(partida);
+            partida.setRepartidas(true);
+            partida.establecerColaTurnos();
+        } else{
+            System.out.println("NO SE REPARTIERON");
+        }
         mostrarJuego(partida);
     }
 
     public void mostrarJuego(Partida partida){
-        textArea.setText("CARTA ALTA: " + "[" + partida.getCartaAlta().getNumero() + " " + partida.getCartaAlta().getColor() + "]");
+        limpiarTextoTextField();
+        textArea.setText("Turno de " + partida.getTurnoActual().getNombre());
+        textArea.append("\nCARTA ALTA: " + "[" + partida.getCartaAlta().getNumero() + " " + partida.getCartaAlta().getColor() + "]");
         textArea.append("\nCARTA BAJA: " + "[" + partida.getCartaBaja().getNumero() + " " + partida.getCartaBaja().getColor() + "]");
         textArea.append("\nMazo (" + partida.getMazo().getCantidadCartas() + " cartas restantes)");
 
         textArea.append("\n\nTus cartas\n");
-        textArea.append("PRIMER CARTA: " + "[" + controlador.getJugador().getPrimeraCartaDelJugador().getNumero() + " " + controlador.getJugador().getPrimeraCartaDelJugador().getColor() + "]");
-        textArea.append("\nSEGUNDA CARTA: " + "[" + controlador.getJugador().getSegundaCartaDelJugador().getNumero() + " " + controlador.getJugador().getSegundaCartaDelJugador().getColor() + "]");
+        textArea.append("PRIMER CARTA: ");
+        if (controlador.getJugador().getPrimeraCartaDelJugador().getEnMano()) {
+            System.out.println("CARTA TEST: "+ controlador.getJugador().getPrimeraCartaDelJugador().getNumero());
+            textArea.append("[" + controlador.getJugador().getPrimeraCartaDelJugador().getNumero() + " " + controlador.getJugador().getPrimeraCartaDelJugador().getColor() + "]");
+        } else {
+            textArea.append("(tomar carta del mazo)");
+        }
+
+        textArea.append("\nSEGUNDA CARTA: ");
+        if (controlador.getJugador().getSegundaCartaDelJugador().getEnMano()){
+            textArea.append("[" + controlador.getJugador().getSegundaCartaDelJugador().getNumero() + " " + controlador.getJugador().getSegundaCartaDelJugador().getColor() + "]");
+        } else {
+            textArea.append("(tomar carta del mazo)");
+        }
 
         movimiento(partida);
     }
+
     public void repartirCartas(Partida partida){
         for (Jugador jugador : partida.getJugadores_en_la_partida()){
             Carta carta = partida.getMazo().agarrarCartaTope();
             jugador.setPrimeraCartaDelJugador(carta);
 
-            carta = partida.getMazo().agarrarCartaTope();
-            jugador.setSegundaCartaDelJugador(carta);
+            Carta carta2 = partida.getMazo().agarrarCartaTope();
+            jugador.setSegundaCartaDelJugador(carta2);
         }
     }
 
     public void movimiento(Partida partida){
-        textArea.append("\n\nSelecciona una carta y la pila (por ejemplo, '1 alta', '2 baja') ");
+        textArea.append("\n\nSelecciona una carta y la pila (por ejemplo, '1 alta' o '2 baja',\no escribe 'paso' luego de tirar al menor una carta) ");
         eliminarActionListeners();
         enviar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                switch (textField.getText()){
-                    case "1 alta":
-                        partida.setCartaAlta(controlador.getJugador().getPrimeraCartaDelJugador());
-                        controlador.getModelo().notificarObservers(partida, Eventos.ACTUALIZACION_CARTA);
-                        break;
-                    case "1 baja":
-                        partida.setCartaBaja(controlador.getJugador().getPrimeraCartaDelJugador());
-                        controlador.getModelo().notificarObservers(partida, Eventos.ACTUALIZACION_CARTA);
-                        break;
-                    case "2 alta":
-                        partida.setCartaAlta(controlador.getJugador().getSegundaCartaDelJugador());
-                        controlador.getModelo().notificarObservers(partida, Eventos.ACTUALIZACION_CARTA);
-                        break;
-                    case "2 baja":
-                        partida.setCartaBaja(controlador.getJugador().getSegundaCartaDelJugador());
-                        controlador.getModelo().notificarObservers(partida, Eventos.ACTUALIZACION_CARTA);
-                        break;
+                if (partida.getTurnoActual().getNombre().equals(controlador.getJugador().getNombre())){
+                    String seleccion = textField.getText();
+                    switch (seleccion){
+                        case "paso":
+                            if (controlador.getJugador().getCantidadCartasTiradas() >= 1 ){
+                                if (!controlador.getJugador().getPrimeraCartaDelJugador().getEnMano()){
+                                    controlador.getJugador().setPrimeraCartaDelJugador(partida.getMazo().agarrarCartaTope());
+                                    controlador.getJugador().getPrimeraCartaDelJugador().setEnMano(true);
+                                    System.out.println("CARTA EN MANO TRUE, PRIMERA");
+                                }
+                                if (!controlador.getJugador().getSegundaCartaDelJugador().getEnMano()){
+                                    controlador.getJugador().setSegundaCartaDelJugador(partida.getMazo().agarrarCartaTope());
+                                    controlador.getJugador().getSegundaCartaDelJugador().setEnMano(true);
+                                    System.out.println("CARTA EN MANO TRUE, SEGUNDA");
+                                }
+                                controlador.getJugador().setCantidadCartasTiradas(0);
+                                partida.avanzarTurno();
+                                controlador.getModelo().notificarObservers(partida, Eventos.CAMBIO_TURNO);
+                            }
+                            break;
+                        case "1 alta":
+                            if (controlador.getJugador().getPrimeraCartaDelJugador().getEnMano() && controlador.getJugador().getPrimeraCartaDelJugador().getNumero() <=
+                                partida.getCartaAlta().getNumero()  &&
+                                controlador.getJugador().getPrimeraCartaDelJugador().getNumero() >=
+                                partida.getCartaBaja().getNumero() ||
+                                controlador.getJugador().getPrimeraCartaDelJugador().getColor().equals(partida.getCartaAlta().getColor()))
+                            {
+                                    System.out.println("MOV 1 alta");
+                                    partida.setCartaAlta(controlador.getJugador().getPrimeraCartaDelJugador());
+                                    controlador.getJugador().getPrimeraCartaDelJugador().setEnMano(false);
+                                    controlador.getJugador().incrementarCartasTiradas();
+                                    controlador.getModelo().notificarObservers(partida, Eventos.ACTUALIZACION_CARTA);
+                            } else{
+                                System.out.println("MOV INVALIDO");
+                                textArea.append("\nMovimiento invalido.");
+                            }
+                            break;
+
+                        case "1 baja":
+                            if (controlador.getJugador().getPrimeraCartaDelJugador().getEnMano() && controlador.getJugador().getPrimeraCartaDelJugador().getNumero() >=
+                                partida.getCartaBaja().getNumero()  &&
+                                controlador.getJugador().getPrimeraCartaDelJugador().getNumero() <=
+                                partida.getCartaAlta().getNumero() ||
+                                controlador.getJugador().getPrimeraCartaDelJugador().getColor().equals(partida.getCartaBaja().getColor())){
+                                    System.out.println("MOV 1 baja");
+                                    partida.setCartaBaja(controlador.getJugador().getPrimeraCartaDelJugador());
+                                    controlador.getJugador().getPrimeraCartaDelJugador().setEnMano(false);
+                                    controlador.getJugador().incrementarCartasTiradas();
+                                    controlador.getModelo().notificarObservers(partida, Eventos.ACTUALIZACION_CARTA);
+                            } else{
+                                System.out.println("MOV INVALIDO");
+                                textArea.append("\nMovimiento invalido.");
+                            }
+                            break;
+
+                        case "2 alta":
+                            if (controlador.getJugador().getSegundaCartaDelJugador().getEnMano() && controlador.getJugador().getSegundaCartaDelJugador().getNumero() <=
+                                partida.getCartaAlta().getNumero() &&
+                                controlador.getJugador().getSegundaCartaDelJugador().getNumero() >=
+                                partida.getCartaBaja().getNumero() ||
+                                controlador.getJugador().getSegundaCartaDelJugador().getColor().equals(partida.getCartaAlta().getColor())){
+                                    System.out.println("MOV 2 alta");
+                                    partida.setCartaAlta(controlador.getJugador().getSegundaCartaDelJugador());
+                                    controlador.getJugador().getSegundaCartaDelJugador().setEnMano(false);
+                                    controlador.getJugador().incrementarCartasTiradas();
+                                    controlador.getModelo().notificarObservers(partida, Eventos.ACTUALIZACION_CARTA);
+                            } else{
+                                System.out.println("MOV INVALIDO");
+                                textArea.append("\nMovimiento invalido.");
+                            }
+                            break;
+
+                        case "2 baja":
+                            if (controlador.getJugador().getSegundaCartaDelJugador().getEnMano() && controlador.getJugador().getSegundaCartaDelJugador().getNumero() >=
+                                partida.getCartaBaja().getNumero() &&
+                                controlador.getJugador().getSegundaCartaDelJugador().getNumero() <=
+                                partida.getCartaAlta().getNumero() ||
+                                controlador.getJugador().getSegundaCartaDelJugador().getColor().equals(partida.getCartaBaja().getColor())){
+                                    System.out.println("MOV 2 baja");
+                                    partida.setCartaBaja(controlador.getJugador().getSegundaCartaDelJugador());
+                                    controlador.getJugador().getSegundaCartaDelJugador().setEnMano(false);
+                                    controlador.getJugador().incrementarCartasTiradas();
+                                    controlador.getModelo().notificarObservers(partida, Eventos.ACTUALIZACION_CARTA);
+                            } else{
+                                System.out.println("MOV INVALIDO");
+                                textArea.append("\nMovimiento invalido.");
+                            }
+                            break;
+                    }
                 }
             }
         });
+
     }
-
-
-
-
-
-
-
-
-
 
 
 

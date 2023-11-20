@@ -67,6 +67,12 @@ public class Controller implements IObserver {
                     if (this.vista.getEstado() == Estados.EN_JUEGO){
                         this.vista.mostrarJuego(partida);
                     }
+                    break;
+                case CAMBIO_TURNO:
+                    if (this.vista.getEstado() == Estados.EN_JUEGO){
+                        this.vista.mostrarJuego(partida);
+                    }
+                    break;
                 default:
                     break;
             }

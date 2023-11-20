@@ -9,4 +9,5 @@ public interface IJuego {
     List<Partida> getPartidas();
     void notificarObservers(Partida partida, Object arg);
     void agregarPartida(Partida partida_nueva);
+
 }

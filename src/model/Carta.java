@@ -3,12 +3,15 @@ package model;
 public class Carta {
     private int numero;
     private EnumColor color;
+    private boolean enMano;
 
     public Carta(int numero){
+        enMano = true;
         this.numero = numero;
         this.color = null;
     }
     public Carta(int numero, EnumColor color){
+        enMano = true;
         this.numero = numero;
         this.color = color;
     }
@@ -43,5 +46,13 @@ public class Carta {
      */
     public void setColor(EnumColor color) {
         this.color = color;
+    }
+
+    public void setEnMano(boolean enMano){
+        this.enMano = enMano;
+    }
+
+    public boolean getEnMano(){
+        return enMano;
     }
 }
