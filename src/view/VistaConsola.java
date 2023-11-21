@@ -111,7 +111,17 @@ public class VistaConsola extends JFrame implements IVista{
                 if (textField.getText().equals("2") || textField.getText().equals("3") || textField.getText().equals("4") || textField.getText().equals("5")){
                     cantidadJugadoresPartida = Integer.parseInt(textField.getText());
                     limpiarTextoTextField();
-                    crearPartida();
+                    int cantidadPartidasEnJuego = 0;
+                    for (Partida partida : controlador.getModelo().getPartidas()){
+                        if (!partida.getFinalizado()){
+                            cantidadPartidasEnJuego++;
+                        }
+                    }
+                    if (cantidadPartidasEnJuego > 0){
+                        textArea.append("\nYa hay una partida en juego, espera a que termine.");
+                    } else{
+                        crearPartida();
+                    }
                 }
                 if (textField.getText().equals("6")){
                     mostrarMenuJuego();
@@ -208,7 +218,13 @@ public class VistaConsola extends JFrame implements IVista{
         });
         int i = 1;
         for (Partida partida : controlador.getPartidas()){
-            textArea.append("Partida " + i + ": " + partida.getCantidadJugadoresEnLaPartida() + "/" + partida.getCantidadJugadoresTotales() + "\n");
+            if (partida.getFinalizado()){
+                textArea.append("Partida " + i + ": " + partida.getCantidadJugadoresEnLaPartida() + "/" + partida.getCantidadJugadoresTotales() + " FINALIZADA\n");
+            } else if (partida.getEnJuego()){
+                textArea.append("Partida " + i + ": " + partida.getCantidadJugadoresEnLaPartida() + "/" + partida.getCantidadJugadoresTotales() + " EN JUEGO\n");
+            } else {
+                textArea.append("Partida " + i + ": " + partida.getCantidadJugadoresEnLaPartida() + "/" + partida.getCantidadJugadoresTotales() + " EN ESPERA\n");
+            }
         }
         textArea.append("\nDigite el número de la partida que te quieres unir.");
 
@@ -220,9 +236,18 @@ public class VistaConsola extends JFrame implements IVista{
                     numeroPartida = Integer.parseInt(textField.getText());
                     if (numeroPartida >= 1 && numeroPartida <= controlador.getPartidas().size()){
                         Partida partida = controlador.getModelo().getPartidas().get(numeroPartida-1);
-                        partida.agregarJugador(controlador.getJugador());
-                        estado = Estados.EN_SALA_ESPERA;
-                        controlador.getModelo().notificarObservers(partida, Eventos.SE_UNIO_JUGADOR);
+                        if (!partida.getEnJuego() && !partida.getFinalizado()){
+                            partida.agregarJugador(controlador.getJugador());
+                            estado = Estados.EN_SALA_ESPERA;
+                            controlador.getModelo().notificarObservers(partida, Eventos.SE_UNIO_JUGADOR);
+                            controlador.getModelo().notificarObservers(partida, Eventos.CAMBIO_LISTA_ESPERA);
+                        } else if (partida.getEnJuego()){
+                            textArea.append("\nEsa partida esta en juego.\n");
+                        } else {
+                            if (partida.getFinalizado()){
+                                textArea.append("Esta partida finalizó");
+                            }
+                        }
                     }
                 } catch (NumberFormatException ex){
                     System.err.println("NÚMERO INVALIDO");
@@ -237,6 +262,9 @@ public class VistaConsola extends JFrame implements IVista{
     public void empezarPartida(Partida partida){
         estado = Estados.EN_JUEGO;
         subtitulo.setText("Partida en Juego - Jugador " + controlador.getJugador().getNombre());
+        if (!partida.getEnJuego()){
+            partida.setEnJuego(true);
+        }
         if (!partida.getRepartidas()){
             System.out.println("TEST, SE REPARTIERON");
             repartirCartas(partida);
@@ -435,6 +463,8 @@ public class VistaConsola extends JFrame implements IVista{
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (textField.getText().equals("salir")){
+                    partida.setFinalizado(true);
+                    partida.setEnJuego(false);
                     mostrarMenuJuego();
                 }
             }
@@ -451,6 +481,8 @@ public class VistaConsola extends JFrame implements IVista{
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (textField.getText().equals("salir")){
+                    partida.setFinalizado(true);
+                    partida.setEnJuego(false);
                     mostrarMenuJuego();
                 }
             }

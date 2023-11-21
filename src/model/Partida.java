@@ -12,10 +12,12 @@ public class Partida {
     private List<Jugador> jugadores_en_la_partida;
     private Carta cartaAlta;
     private Carta cartaBaja;
+    private Mazo mazo;
     private Queue<Jugador> turnos;
     private Jugador turnoActual;
     private boolean repartidas;
-    private Mazo mazo;
+    private boolean finalizado;
+    private boolean enJuego;
 
     public Partida(int cantidadJugadoresTotales){
         jugadores_en_la_partida = new ArrayList<>();
@@ -24,6 +26,7 @@ public class Partida {
         cartaBaja = new Carta(1, EnumColor.PURPURA);
         turnos = new LinkedList<>();
         repartidas = false;
+        finalizado = false;
         mazo = new Mazo();
     }
 
@@ -79,16 +82,8 @@ public class Partida {
         return turnos.peek();
     }
 
-    public Queue<Jugador> getTurnos(){
-        return this.turnos;
-    }
-
     public Jugador getTurnoActual(){
         return this.turnoActual;
-    }
-
-    public void setTurnoActual(Jugador turnoActual){
-        this.turnoActual = turnoActual;
     }
 
     public void setRepartidas(boolean repartidas){
@@ -98,4 +93,19 @@ public class Partida {
         return this.repartidas;
     }
 
+    public boolean getFinalizado() {
+        return finalizado;
+    }
+
+    public void setFinalizado(boolean finalizado) {
+        this.finalizado = finalizado;
+    }
+
+    public boolean getEnJuego() {
+        return enJuego;
+    }
+
+    public void setEnJuego(boolean enJuego) {
+        this.enJuego = enJuego;
+    }
 }

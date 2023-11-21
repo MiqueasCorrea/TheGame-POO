@@ -26,9 +26,6 @@ public class Mazo {
             }
         }
         Collections.shuffle(cartas);
-//        for (Carta carta : cartas){
-//            System.out.println(carta.getNumero() + " " + carta.getColor());
-//        }
     }
 
     public List<Carta> getCartas() {

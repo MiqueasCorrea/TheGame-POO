@@ -16,12 +16,12 @@ public class Main {
         IVista vista2 = new VistaConsola(controlador2);
         vista2.mostrarInicioSesion();
 
-//        Controller controlador3 = new Controller(modelo);
-//        IVista vista3 = new VistaConsola(controlador3);
-//        vista3.mostrarInicioSesion();
-//
-//        Controller controlador4 = new Controller(modelo);
-//        IVista vista4 = new VistaConsola(controlador4);
-//        vista4.mostrarInicioSesion();
+        Controller controlador3 = new Controller(modelo);
+        IVista vista3 = new VistaConsola(controlador3);
+        vista3.mostrarInicioSesion();
+
+        Controller controlador4 = new Controller(modelo);
+        IVista vista4 = new VistaConsola(controlador4);
+        vista4.mostrarInicioSesion();
     }
 }

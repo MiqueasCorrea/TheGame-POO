@@ -41,18 +41,6 @@ public class Controller implements IObserver {
     }
 
 
-
-
-//    public void actualizarCartas(Carta cartaAlta, Carta cartaBaja) {
-//        if (cartaAlta != null){
-//            modelo.setCartaAlta(cartaAlta);
-//        }
-//        if (cartaBaja != null){
-//            modelo.setCartaBaja(cartaBaja);
-//        }
-//    }
-
-
     @Override
     public void update(Partida partida, Object arg){
         if (arg instanceof Eventos){
