@@ -191,12 +191,12 @@ public class VistaConsola extends JFrame implements IVista{
     public void mostrarEsperandoJugadores(Partida partida){
         eliminarActionListeners();
         subtitulo.setText("Esperando Jugadores");
-        textArea.setText("Jugadores necesarios: " + partida.getCantidadJugadoresEnLaPartida() + "/" + cantidadJugadoresPartida + "\n\n-Jugadores en la sala: \n");
+        textArea.setText("Jugadores necesarios: " + partida.getCantidadJugadoresEnLaPartida() + "/" + partida.getCantidadJugadoresTotales() + "\n\n-Jugadores en la sala: \n");
         for (Jugador jugador : partida.getJugadores_en_la_partida()){
             textArea.append("- " + jugador.getNombre() + "\n");
         }
 
-        if (partida.getCantidadJugadoresEnLaPartida() >= cantidadJugadoresPartida){
+        if (partida.getCantidadJugadoresEnLaPartida() >= partida.getCantidadJugadoresTotales()){
             textArea.append("\n\nSALA LLENA\n");
             textArea.append("El juego empezará pronto");
             empezarPartida(partida);
@@ -302,7 +302,7 @@ public class VistaConsola extends JFrame implements IVista{
         movimiento(partida);
     }
 
-    public void repartirCartas(Partida partida){
+    private void repartirCartas(Partida partida){
         for (Jugador jugador : partida.getJugadores_en_la_partida()){
             Carta carta = partida.getMazo().agarrarCartaTope();
             jugador.setPrimeraCartaDelJugador(carta);
@@ -312,7 +312,7 @@ public class VistaConsola extends JFrame implements IVista{
         }
     }
 
-    public void movimiento(Partida partida){
+    private void movimiento(Partida partida){
         textArea.append("\n\nSelecciona una carta y la pila (por ejemplo, '1 alta' o '2 baja',\no escribe 'paso' luego de tirar al menor una carta) ");
         eliminarActionListeners();
         enviar.addActionListener(new ActionListener() {
@@ -434,7 +434,7 @@ public class VistaConsola extends JFrame implements IVista{
         }
     }
 
-    public boolean verificarGameOver(Partida partida){
+    private boolean verificarGameOver(Partida partida){
         if (!puedeJugarCarta(partida, partida.getTurnoActual().getPrimeraCartaDelJugador()) &&
             !puedeJugarCarta(partida, partida.getTurnoActual().getSegundaCartaDelJugador())){
             return true;
@@ -442,7 +442,7 @@ public class VistaConsola extends JFrame implements IVista{
         return false;
     }
 
-    public boolean puedeJugarCarta(Partida partida, Carta carta){
+    private boolean puedeJugarCarta(Partida partida, Carta carta){
         if (!carta.getEnMano()){
             return true;
         }

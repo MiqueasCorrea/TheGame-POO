@@ -1,13 +1,12 @@
 //import controller.Controller;
 import model.*;
-import model.interfaces.IJuego;
 import view.IVista;
 import view.VistaConsola;
 import controller.Controller;
 
 public class Main {
     public static void main(String[] args) {
-        IJuego modelo = new Juego();
+        Juego modelo = new Juego();
         Controller controlador1 = new Controller(modelo);
         IVista vista1 = new VistaConsola(controlador1);
         vista1.mostrarInicioSesion();

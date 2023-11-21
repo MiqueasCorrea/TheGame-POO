@@ -2,21 +2,20 @@ package controller;
 import model.*;
 import model.enums.Estados;
 import model.enums.Eventos;
-import model.interfaces.IJuego;
 import model.interfaces.IObserver;
 import view.IVista;
 import java.util.List;
 
 public class Controller implements IObserver {
-    private IJuego modelo;
+    private Juego modelo;
     private Jugador jugador;
     private IVista vista;
 
-    public Controller(IJuego modelo) {
+    public Controller(Juego modelo) {
         this.modelo = modelo;
     }
 
-    public IJuego getModelo(){
+    public Juego getModelo(){
         return this.modelo;
     }
 
