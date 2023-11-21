@@ -1,6 +1,8 @@
-package model;
+package model.interfaces;
 
-import java.rmi.RemoteException;
+import model.Jugador;
+import model.Partida;
+
 import java.util.List;
 
 public interface IJuego {

@@ -1,8 +1,8 @@
 package model;
 
-import ar.edu.unlu.rmimvc.observer.ObservableRemoto;
+import model.interfaces.IJuego;
+import model.interfaces.IObserver;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 

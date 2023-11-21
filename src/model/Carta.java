@@ -1,5 +1,7 @@
 package model;
 
+import model.enums.EnumColor;
+
 public class Carta {
     private int numero;
     private EnumColor color;

@@ -1,5 +1,9 @@
 package controller;
 import model.*;
+import model.enums.Estados;
+import model.enums.Eventos;
+import model.interfaces.IJuego;
+import model.interfaces.IObserver;
 import view.IVista;
 import java.util.List;
 
@@ -71,6 +75,16 @@ public class Controller implements IObserver {
                 case CAMBIO_TURNO:
                     if (this.vista.getEstado() == Estados.EN_JUEGO){
                         this.vista.mostrarJuego(partida);
+                    }
+                    break;
+                case GAME_OVER:
+                    if (this.vista.getEstado() == Estados.EN_JUEGO){
+                        this.vista.gameOver(partida);
+                    }
+                    break;
+                case GAME_WIN:
+                    if (this.vista.getEstado() == Estados.EN_JUEGO){
+                        this.vista.gameWin(partida);
                     }
                     break;
                 default:

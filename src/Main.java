@@ -1,5 +1,6 @@
 //import controller.Controller;
 import model.*;
+import model.interfaces.IJuego;
 import view.IVista;
 import view.VistaConsola;
 import controller.Controller;

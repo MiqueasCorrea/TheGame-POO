@@ -1,7 +1,6 @@
 package view;
 
-import model.Carta;
-import model.Estados;
+import model.enums.Estados;
 import model.Partida;
 
 public interface IVista {
@@ -11,5 +10,7 @@ public interface IVista {
     void mostrarJuego(Partida partida);
     void mostrarEsperandoJugadores(Partida nueva_partida);
     void mostrarBuscarPartidas();
+    void gameOver(Partida partida);
+    void gameWin(Partida partida);
     Estados getEstado();
 }
