@@ -134,8 +134,8 @@ public class VistaConsola extends JFrame implements IVista{
                 "En su turno, el jugador activo deberá colocar una o incluso las dos cartas de su mano, encima de una de las pilas existentes (o incluso una carta en cada pila) y cogerá del mazo de robo tantas como haya jugado para volver a tener dos pasando el turno al siguiente jugador.\n" +
                 "\n" +
                 "Las cartas que se colocan deben seguir las siguientes reglas:\n" +
-                "Las que se coloquen en la pila inferior (pila ascendente) deberán tener un número superior al de la carta visible en ese momento.\n" +
                 "Las que se coloquen en la pila superior (pila descendente) deberán tener un número inferior al de la carta visible en ese momento.\n" +
+                "Las que se coloquen en la pila inferior (pila ascendente) deberán tener un número superior al de la carta visible en ese momento.\n" +
                 "\n" +
                 "TIP: Truco de la marcha atrás: Si se coloca una carta del mismo color que la carta superior de la pila donde se desea poner, el valor numérico podrá ser cualquiera, es decir, podrá incluso ponerse un número contrario a las normas anteriores, con el fin de acomodar a nuestros gustos las cartas, por ejemplo, en la carta menor pongo un 10 azul, pero como tengo otra carta azul, la cual es un 2, puedo tirarla y descartas el 10 y dejar el 2 como menor, lo que le sirve mucho al siguiente jugador ya que es una carta bastante baja para no perder.\n" +
                 "\n" +
@@ -150,8 +150,8 @@ public class VistaConsola extends JFrame implements IVista{
                 "1.El jugador activo no puede poner ninguna de sus cartas en ninguna de las pilas cumpliendo las reglas. Los jugadores habrán perdido\n" +
                 "2.Se acaba el mazo de robo y se han puesto todas las cartas en ambas pilas. Los jugadores habrán ganado.\n" +
                 "\n" +
-                "Variante para profesionales\n" +
-                "En esta variante, los jugadores solo podrán poner exactamente una carta en cada turno y además, quedará prohibido dar pistas sobre el valor de los números. Solo podrán indicarse el color de la carta y en qué pila le gustaría poner una carta o como mucho, en cuál de ellas se podría aplicar el truco de la marcha atrás.\n" +
+                "Comandos\n" +
+                "Hay varios comandos, se indican en la partida, pero si quieres saberlos pueden ser los siguientes: '1 alta', '1 baja', '2 alta', '2 baja', y 'paso', el 1 significa que es la primer carta, y el 2 significa que es la segunda carta, seguido de La pila donde quieres poner dicha carta, por ejemplo, '2 alta', pongo mi segunda carta en la pila alta, siempre y cuando sea válido, decir 'paso', cambia de turno, siempre y cuando hayas tirado al menos una carta.\n" +
                 "\nPresione enter para volver al menú.";
 
         textArea.setText(reglasTexto);
@@ -315,6 +315,8 @@ public class VistaConsola extends JFrame implements IVista{
                         case "2 baja":
                             manejarMovimiento(partida, seleccion);
                             break;
+                        default:
+                            break;
                     }
                 }
             }
@@ -405,8 +407,8 @@ public class VistaConsola extends JFrame implements IVista{
     }
 
     public boolean verificarGameOver(Partida partida){
-        if (!puedeJugarCarta(partida, controlador.getJugador().getPrimeraCartaDelJugador()) &&
-            !puedeJugarCarta(partida, controlador.getJugador().getPrimeraCartaDelJugador())){
+        if (!puedeJugarCarta(partida, partida.getTurnoActual().getPrimeraCartaDelJugador()) &&
+            !puedeJugarCarta(partida, partida.getTurnoActual().getSegundaCartaDelJugador())){
             return true;
         }
         return false;
@@ -416,8 +418,9 @@ public class VistaConsola extends JFrame implements IVista{
         if (!carta.getEnMano()){
             return true;
         }
-        if (carta.getNumero() > partida.getCartaAlta().getNumero() && carta.getNumero() < partida.getCartaBaja().getNumero()
-            && carta.getColor().equals(partida.getCartaAlta().getColor()) || carta.getColor().equals(partida.getCartaBaja().getColor())){
+        if ((carta.getNumero() != partida.getCartaBaja().getNumero() && carta.getNumero() != partida.getCartaAlta().getNumero()) &&
+            (carta.getNumero() > partida.getCartaBaja().getNumero() && carta.getNumero() < partida.getCartaAlta().getNumero())
+            || (carta.getColor().equals(partida.getCartaAlta().getColor()) || carta.getColor().equals(partida.getCartaBaja().getColor()))){
             return true;
         } else {
             return false;
