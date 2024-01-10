@@ -64,6 +64,7 @@ public class Menu extends javax.swing.JFrame {
         });
         vMenu.add(botonJugar, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, 150, 50));
 
+        botonReglas.setBackground(new java.awt.Color(0,0,0,0));
         botonReglas.setFont(new java.awt.Font("RETROTECH", 0, 48)); // NOI18N
         botonReglas.setForeground(new java.awt.Color(255, 255, 255));
         botonReglas.setText("Reglas");
@@ -76,6 +77,11 @@ public class Menu extends javax.swing.JFrame {
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 botonReglasMouseExited(evt);
+            }
+        });
+        botonReglas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonReglasActionPerformed(evt);
             }
         });
         vMenu.add(botonReglas, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 150, 160, 40));
@@ -107,6 +113,10 @@ public class Menu extends javax.swing.JFrame {
     private void botonReglasMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonReglasMouseExited
         botonReglas.setBorder(null);
     }//GEN-LAST:event_botonReglasMouseExited
+
+    private void botonReglasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonReglasActionPerformed
+        vistaGrafica.mostrarReglas();
+    }//GEN-LAST:event_botonReglasActionPerformed
 
     /**
      * @param args the command line arguments

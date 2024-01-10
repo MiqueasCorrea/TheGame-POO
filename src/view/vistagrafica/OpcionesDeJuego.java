@@ -5,17 +5,37 @@
 package view.vistagrafica;
 
 import javax.swing.border.BevelBorder;
+import javax.imageio.ImageIO;
+import java.io.IOException;
+import java.awt.image.BufferedImage;
+import javax.swing.ImageIcon;
+import javax.swing.SwingWorker;
 
 /**
  *
  * @author miqueas
  */
 public class OpcionesDeJuego extends javax.swing.JFrame {
+    private ImageIcon imagenDosJugadores;
+    private ImageIcon imagenTresJugadores;
+    private ImageIcon imagenCuatroJugadores;
+    private ImageIcon imagenCincoJugadores;
+    private ImageIcon imagenOriginal;
+    private VistaGrafica vistaGrafica;
+    
+    public void setVistaGrafica(VistaGrafica vistaGrafica){
+        this.vistaGrafica = vistaGrafica;
+    }
 
     /**
      * Creates new form OpcionesDeJuego
      */
     public OpcionesDeJuego() {
+        imagenDosJugadores = new ImageIcon(getClass().getResource("/view/imagenes/2jugadores.png"));
+        imagenTresJugadores = new ImageIcon(getClass().getResource("/view/imagenes/3jugadoresbackgroundcorreigod.png"));
+        imagenCuatroJugadores = new ImageIcon(getClass().getResource("/view/imagenes/4jugadoresbackground.png"));
+        imagenCincoJugadores = new ImageIcon(getClass().getResource("/view/imagenes/5jugadoresbackground.png"));
+        imagenOriginal = new ImageIcon(getClass().getResource("/view/imagenes/fondoEstatico.png"));
         initComponents();
         this.setLocationRelativeTo(null);
         this.setResizable(false);
@@ -35,10 +55,12 @@ public class OpcionesDeJuego extends javax.swing.JFrame {
         boton2Players = new javax.swing.JButton();
         boton4Players = new javax.swing.JButton();
         Volver = new javax.swing.JButton();
+        boton5Players = new javax.swing.JButton();
         labelBackgroundMenu = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        vOpcionesDeJuego.setOpaque(false);
         vOpcionesDeJuego.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         boton3Players.setBackground(new java.awt.Color(255, 255, 255));
@@ -69,6 +91,7 @@ public class OpcionesDeJuego extends javax.swing.JFrame {
         boton2Players.setText("2 Jugadores");
         boton2Players.setBorder(null);
         boton2Players.setContentAreaFilled(false);
+        boton2Players.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         boton2Players.setFocusPainted(false);
         boton2Players.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -129,6 +152,28 @@ public class OpcionesDeJuego extends javax.swing.JFrame {
         });
         vOpcionesDeJuego.add(Volver, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 450, 120, 50));
 
+        boton5Players.setBackground(new java.awt.Color(255, 255, 255));
+        boton5Players.setFont(new java.awt.Font("RETROTECH", 0, 36)); // NOI18N
+        boton5Players.setForeground(new java.awt.Color(255, 255, 255));
+        boton5Players.setText("5 Jugadores");
+        boton5Players.setBorder(null);
+        boton5Players.setContentAreaFilled(false);
+        boton5Players.setFocusPainted(false);
+        boton5Players.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                boton5PlayersMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                boton5PlayersMouseExited(evt);
+            }
+        });
+        boton5Players.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                boton5PlayersActionPerformed(evt);
+            }
+        });
+        vOpcionesDeJuego.add(boton5Players, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 280, 210, 50));
+
         labelBackgroundMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/imagenes/file.gif"))); // NOI18N
         vOpcionesDeJuego.add(labelBackgroundMenu, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 900, 530));
 
@@ -169,35 +214,10 @@ public class OpcionesDeJuego extends javax.swing.JFrame {
     }//GEN-LAST:event_boton4PlayersActionPerformed
 
     private void VolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VolverActionPerformed
-        // TODO add your handling code here:
+        vistaGrafica.mostrarMenuGrafica();
     }//GEN-LAST:event_VolverActionPerformed
     
     
-    // ENTERED MOUSE ACCIONES
-    private void boton2PlayersMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boton2PlayersMouseEntered
-        boton2Players.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-    }//GEN-LAST:event_boton2PlayersMouseEntered
-
-    private void boton2PlayersMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boton2PlayersMouseExited
-        boton2Players.setBorder(null);
-    }//GEN-LAST:event_boton2PlayersMouseExited
-
-    private void boton3PlayersMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boton3PlayersMouseEntered
-        boton3Players.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-    }//GEN-LAST:event_boton3PlayersMouseEntered
-
-    private void boton3PlayersMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boton3PlayersMouseExited
-        boton3Players.setBorder(null);
-    }//GEN-LAST:event_boton3PlayersMouseExited
-
-    private void boton4PlayersMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boton4PlayersMouseEntered
-        boton4Players.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-    }//GEN-LAST:event_boton4PlayersMouseEntered
-
-    private void boton4PlayersMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boton4PlayersMouseExited
-        boton4Players.setBorder(null);
-    }//GEN-LAST:event_boton4PlayersMouseExited
-
     private void VolverMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_VolverMouseEntered
         Volver.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
     }//GEN-LAST:event_VolverMouseEntered
@@ -205,6 +225,51 @@ public class OpcionesDeJuego extends javax.swing.JFrame {
     private void VolverMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_VolverMouseExited
         Volver.setBorder(null);
     }//GEN-LAST:event_VolverMouseExited
+
+    private void boton2PlayersMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boton2PlayersMouseEntered
+        boton2Players.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        labelBackgroundMenu.setIcon(imagenDosJugadores);
+        
+    }//GEN-LAST:event_boton2PlayersMouseEntered
+
+    private void boton2PlayersMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boton2PlayersMouseExited
+        boton2Players.setBorder(null);
+        labelBackgroundMenu.setIcon(imagenOriginal);
+    }//GEN-LAST:event_boton2PlayersMouseExited
+
+    private void boton3PlayersMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boton3PlayersMouseEntered
+        boton3Players.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        labelBackgroundMenu.setIcon(imagenTresJugadores);
+    }//GEN-LAST:event_boton3PlayersMouseEntered
+
+    private void boton3PlayersMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boton3PlayersMouseExited
+        boton3Players.setBorder(null);
+        labelBackgroundMenu.setIcon(imagenOriginal);
+    }//GEN-LAST:event_boton3PlayersMouseExited
+
+    private void boton4PlayersMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boton4PlayersMouseEntered
+        boton4Players.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        labelBackgroundMenu.setIcon(imagenCuatroJugadores);
+    }//GEN-LAST:event_boton4PlayersMouseEntered
+
+    private void boton4PlayersMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boton4PlayersMouseExited
+        boton4Players.setBorder(null);
+        labelBackgroundMenu.setIcon(imagenOriginal);
+    }//GEN-LAST:event_boton4PlayersMouseExited
+
+    private void boton5PlayersMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boton5PlayersMouseEntered
+        boton5Players.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        labelBackgroundMenu.setIcon(imagenCincoJugadores);
+    }//GEN-LAST:event_boton5PlayersMouseEntered
+
+    private void boton5PlayersMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boton5PlayersMouseExited
+        boton5Players.setBorder(null);
+        labelBackgroundMenu.setIcon(imagenOriginal);
+    }//GEN-LAST:event_boton5PlayersMouseExited
+
+    private void boton5PlayersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton5PlayersActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_boton5PlayersActionPerformed
 
     /**
      * @param args the command line arguments
@@ -246,6 +311,7 @@ public class OpcionesDeJuego extends javax.swing.JFrame {
     private javax.swing.JButton boton2Players;
     private javax.swing.JButton boton3Players;
     private javax.swing.JButton boton4Players;
+    private javax.swing.JButton boton5Players;
     private javax.swing.JLabel labelBackgroundMenu;
     private javax.swing.JPanel vOpcionesDeJuego;
     // End of variables declaration//GEN-END:variables

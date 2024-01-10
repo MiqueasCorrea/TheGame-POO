@@ -12,13 +12,18 @@ public class VistaGrafica {
     private Login login;
     private Menu menu;
     private OpcionesDeJuego opcionesDeJuego;
+    private Reglas reglas;
     
     public VistaGrafica(){
         login = new Login();
         menu = new Menu();
         opcionesDeJuego = new OpcionesDeJuego();
+        reglas = new Reglas();
+        
         login.setVistaGrafica(this);
         menu.setVistaGrafica(this);
+        opcionesDeJuego.setVistaGrafica(this);
+        reglas.setVistaGrafica(this);
         mostrarVistaGrafica();
     }
     
@@ -36,6 +41,7 @@ public class VistaGrafica {
     
     public void mostrarMenuGrafica(){
         ocultarLoginGrafica();
+        ocultarOpcionesJuegoGrafica();
         menu.setVisible(true);
     }
     
@@ -46,6 +52,15 @@ public class VistaGrafica {
     public void mostrarOpcionesJuegoGrafica(){
         ocultarMenuGrafica();
         opcionesDeJuego.setVisible(true);
+    }
+    
+    public void ocultarOpcionesJuegoGrafica(){
+        opcionesDeJuego.setVisible(false);
+    }
+    
+    public void mostrarReglas(){
+        ocultarMenuGrafica();
+        reglas.setVisible(true);
     }
     
 }
