@@ -28,6 +28,7 @@ public class Controller implements IObserver {
 
     public void conectarJugador(String nombre){ // set Jugador
         this.jugador = this.modelo.conectarUsuario(nombre, this);
+        System.out.println("CONECTO");
     }
 
     public Jugador getJugador(){
@@ -45,6 +46,11 @@ public class Controller implements IObserver {
         if (arg instanceof Eventos){
             switch ((Eventos) arg){
                 case CAMBIO_LISTA_ESPERA:
+                    if (this.vista.getEstado() == Estados.EN_BUSCAR_PARTIDA){
+                        this.vista.mostrarBuscarPartidas();
+                    }
+                    break;
+                case CAMBIO_BUSCAR_PARTIDA:
                     if (this.vista.getEstado() == Estados.EN_BUSCAR_PARTIDA){
                         this.vista.mostrarBuscarPartidas();
                     }

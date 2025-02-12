@@ -37,6 +37,7 @@ public class Juego{
 
     public void notificarObservers(Partida partida, Object arg){
         for (IObserver observer : observadores){
+            System.out.println("UN OBSERVADOR ENCONTRADO");
             observer.update(partida, arg);
         }
     }

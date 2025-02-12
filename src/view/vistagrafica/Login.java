@@ -82,7 +82,7 @@ public class Login extends javax.swing.JFrame {
         autorLabel.setFont(new java.awt.Font("RETROTECH", 0, 24)); // NOI18N
         autorLabel.setForeground(new java.awt.Color(255, 255, 255));
         autorLabel.setText("Creado por Correa Miqueas");
-        vLogin.add(autorLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 500, -1, -1));
+        vLogin.add(autorLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 490, -1, -1));
 
         labelBackground.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/imagenes/file.gif"))); // NOI18N
         vLogin.add(labelBackground, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 600, 530));
@@ -98,6 +98,7 @@ public class Login extends javax.swing.JFrame {
 
     private void jBotonLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonLoginActionPerformed
         if (jTextFieldLogin.getText() != null && !jTextFieldLogin.getText().isEmpty()) {
+            vistaGrafica.conectarJugador(jTextFieldLogin.getText());
             vistaGrafica.mostrarMenuGrafica();
         } else{
             jTextFieldLogin.requestFocus();

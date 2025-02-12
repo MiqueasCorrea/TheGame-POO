@@ -5,24 +5,20 @@
 package view.vistagrafica;
 
 import javax.swing.border.BevelBorder;
-import javax.imageio.ImageIO;
-import java.io.IOException;
-import java.awt.image.BufferedImage;
+import javax.swing.JLayeredPane;
+import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 import javax.swing.ImageIcon;
-import javax.swing.SwingWorker;
+
 
 /**
  *
  * @author miqueas
  */
 public class OpcionesDeJuego extends javax.swing.JFrame {
-    private ImageIcon imagenDosJugadores;
-    private ImageIcon imagenTresJugadores;
-    private ImageIcon imagenCuatroJugadores;
-    private ImageIcon imagenCincoJugadores;
-    private ImageIcon imagenOriginal;
     private VistaGrafica vistaGrafica;
-    
+
+
     public void setVistaGrafica(VistaGrafica vistaGrafica){
         this.vistaGrafica = vistaGrafica;
     }
@@ -31,14 +27,13 @@ public class OpcionesDeJuego extends javax.swing.JFrame {
      * Creates new form OpcionesDeJuego
      */
     public OpcionesDeJuego() {
-        imagenDosJugadores = new ImageIcon(getClass().getResource("/view/imagenes/2jugadores.png"));
-        imagenTresJugadores = new ImageIcon(getClass().getResource("/view/imagenes/3jugadoresbackgroundcorreigod.png"));
-        imagenCuatroJugadores = new ImageIcon(getClass().getResource("/view/imagenes/4jugadoresbackground.png"));
-        imagenCincoJugadores = new ImageIcon(getClass().getResource("/view/imagenes/5jugadoresbackground.png"));
-        imagenOriginal = new ImageIcon(getClass().getResource("/view/imagenes/fondoEstatico.png"));
         initComponents();
         this.setLocationRelativeTo(null);
         this.setResizable(false);
+        jugador1.setVisible(false);
+        jugador2.setVisible(false);
+        jugador3.setVisible(false);
+        jugador4.setVisible(false);
     }
 
     /**
@@ -51,39 +46,21 @@ public class OpcionesDeJuego extends javax.swing.JFrame {
     private void initComponents() {
 
         vOpcionesDeJuego = new javax.swing.JPanel();
-        boton3Players = new javax.swing.JButton();
         boton2Players = new javax.swing.JButton();
+        boton3Players = new javax.swing.JButton();
         boton4Players = new javax.swing.JButton();
         Volver = new javax.swing.JButton();
-        boton5Players = new javax.swing.JButton();
-        labelBackgroundMenu = new javax.swing.JLabel();
+        jugador1 = new javax.swing.JLabel();
+        jugador2 = new javax.swing.JLabel();
+        jugador3 = new javax.swing.JLabel();
+        jugador4 = new javax.swing.JLabel();
+        labelBackgroundMenu1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        vOpcionesDeJuego.setDoubleBuffered(false);
         vOpcionesDeJuego.setOpaque(false);
         vOpcionesDeJuego.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        boton3Players.setBackground(new java.awt.Color(255, 255, 255));
-        boton3Players.setFont(new java.awt.Font("RETROTECH", 0, 36)); // NOI18N
-        boton3Players.setForeground(new java.awt.Color(255, 255, 255));
-        boton3Players.setText("3 Jugadores");
-        boton3Players.setBorder(null);
-        boton3Players.setContentAreaFilled(false);
-        boton3Players.setFocusPainted(false);
-        boton3Players.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                boton3PlayersMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                boton3PlayersMouseExited(evt);
-            }
-        });
-        boton3Players.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                boton3PlayersActionPerformed(evt);
-            }
-        });
-        vOpcionesDeJuego.add(boton3Players, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 210, 50));
 
         boton2Players.setBackground(new java.awt.Color(255, 255, 255));
         boton2Players.setFont(new java.awt.Font("RETROTECH", 0, 36)); // NOI18N
@@ -106,7 +83,29 @@ public class OpcionesDeJuego extends javax.swing.JFrame {
                 boton2PlayersActionPerformed(evt);
             }
         });
-        vOpcionesDeJuego.add(boton2Players, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 210, 50));
+        vOpcionesDeJuego.add(boton2Players, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 140, -1, -1));
+
+        boton3Players.setBackground(new java.awt.Color(255, 255, 255));
+        boton3Players.setFont(new java.awt.Font("RETROTECH", 0, 36)); // NOI18N
+        boton3Players.setForeground(new java.awt.Color(255, 255, 255));
+        boton3Players.setText("3 Jugadores");
+        boton3Players.setBorder(null);
+        boton3Players.setContentAreaFilled(false);
+        boton3Players.setFocusPainted(false);
+        boton3Players.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                boton3PlayersMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                boton3PlayersMouseExited(evt);
+            }
+        });
+        boton3Players.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                boton3PlayersActionPerformed(evt);
+            }
+        });
+        vOpcionesDeJuego.add(boton3Players, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 210, -1, -1));
 
         boton4Players.setBackground(new java.awt.Color(255, 255, 255));
         boton4Players.setFont(new java.awt.Font("RETROTECH", 0, 36)); // NOI18N
@@ -128,7 +127,7 @@ public class OpcionesDeJuego extends javax.swing.JFrame {
                 boton4PlayersActionPerformed(evt);
             }
         });
-        vOpcionesDeJuego.add(boton4Players, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 200, 210, 50));
+        vOpcionesDeJuego.add(boton4Players, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 290, -1, -1));
 
         Volver.setBackground(new java.awt.Color(255, 255, 255));
         Volver.setFont(new java.awt.Font("RETROTECH", 0, 36)); // NOI18N
@@ -150,71 +149,65 @@ public class OpcionesDeJuego extends javax.swing.JFrame {
                 VolverActionPerformed(evt);
             }
         });
-        vOpcionesDeJuego.add(Volver, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 450, 120, 50));
+        vOpcionesDeJuego.add(Volver, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 460, -1, -1));
 
-        boton5Players.setBackground(new java.awt.Color(255, 255, 255));
-        boton5Players.setFont(new java.awt.Font("RETROTECH", 0, 36)); // NOI18N
-        boton5Players.setForeground(new java.awt.Color(255, 255, 255));
-        boton5Players.setText("5 Jugadores");
-        boton5Players.setBorder(null);
-        boton5Players.setContentAreaFilled(false);
-        boton5Players.setFocusPainted(false);
-        boton5Players.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                boton5PlayersMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                boton5PlayersMouseExited(evt);
-            }
-        });
-        boton5Players.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                boton5PlayersActionPerformed(evt);
-            }
-        });
-        vOpcionesDeJuego.add(boton5Players, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 280, 210, 50));
+        jugador1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/imagenes/menu/jugador1.png"))); // NOI18N
+        vOpcionesDeJuego.add(jugador1, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 340, 60, -1));
 
-        labelBackgroundMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/imagenes/file.gif"))); // NOI18N
-        vOpcionesDeJuego.add(labelBackgroundMenu, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 900, 530));
+        jugador2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/imagenes/menu/jugador2.png"))); // NOI18N
+        vOpcionesDeJuego.add(jugador2, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 240, 60, 110));
+
+        jugador3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/imagenes/menu/jugador3.png"))); // NOI18N
+        vOpcionesDeJuego.add(jugador3, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 300, -1, -1));
+
+        jugador4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/imagenes/menu/jugador4.png"))); // NOI18N
+        vOpcionesDeJuego.add(jugador4, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 190, -1, -1));
+
+        labelBackgroundMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/imagenes/menu/menuGIf.gif"))); // NOI18N
+        vOpcionesDeJuego.add(labelBackgroundMenu1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 960, 530));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 896, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(vOpcionesDeJuego, javax.swing.GroupLayout.PREFERRED_SIZE, 896, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(vOpcionesDeJuego, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 527, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(vOpcionesDeJuego, javax.swing.GroupLayout.PREFERRED_SIZE, 527, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(vOpcionesDeJuego, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void boton3PlayersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton3PlayersActionPerformed
-        boton3Players.setText("pepee");
+        vistaGrafica.crearPartida(3);
+        setVisible(false);
+        vistaGrafica.getPartidaEnJuego().setVisible(true);
     }//GEN-LAST:event_boton3PlayersActionPerformed
 
     private void boton2PlayersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton2PlayersActionPerformed
         // TODO add your handling code here:
+        vistaGrafica.crearPartida(2);
+        setVisible(false);
+        vistaGrafica.getPartidaEnJuego().setVisible(true);
     }//GEN-LAST:event_boton2PlayersActionPerformed
 
     private void boton4PlayersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton4PlayersActionPerformed
-        // TODO add your handling code here:
+        vistaGrafica.crearPartida(4);
+        setVisible(false);
+        vistaGrafica.getPartidaEnJuego().setVisible(true);
     }//GEN-LAST:event_boton4PlayersActionPerformed
 
     private void VolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VolverActionPerformed
-        vistaGrafica.mostrarMenuGrafica();
+        setVisible(false);
+        vistaGrafica.mostrarOpciones();
     }//GEN-LAST:event_VolverActionPerformed
     
     
@@ -228,49 +221,47 @@ public class OpcionesDeJuego extends javax.swing.JFrame {
 
     private void boton2PlayersMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boton2PlayersMouseEntered
         boton2Players.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        labelBackgroundMenu.setIcon(imagenDosJugadores);
-        
+        jugador1.setVisible(true);
+        jugador3.setVisible(true);
     }//GEN-LAST:event_boton2PlayersMouseEntered
 
     private void boton2PlayersMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boton2PlayersMouseExited
         boton2Players.setBorder(null);
-        labelBackgroundMenu.setIcon(imagenOriginal);
+        jugador1.setVisible(false);
+        jugador3.setVisible(false);
     }//GEN-LAST:event_boton2PlayersMouseExited
 
     private void boton3PlayersMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boton3PlayersMouseEntered
         boton3Players.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        labelBackgroundMenu.setIcon(imagenTresJugadores);
+        jugador1.setVisible(true);
+        jugador2.setVisible(true);
+        jugador3.setVisible(true);
     }//GEN-LAST:event_boton3PlayersMouseEntered
 
     private void boton3PlayersMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boton3PlayersMouseExited
         boton3Players.setBorder(null);
-        labelBackgroundMenu.setIcon(imagenOriginal);
+        jugador1.setVisible(false);
+        jugador2.setVisible(false);
+        jugador3.setVisible(false);
     }//GEN-LAST:event_boton3PlayersMouseExited
 
     private void boton4PlayersMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boton4PlayersMouseEntered
         boton4Players.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        labelBackgroundMenu.setIcon(imagenCuatroJugadores);
+        jugador1.setVisible(true);
+        jugador2.setVisible(true);
+        jugador3.setVisible(true);
+        jugador4.setVisible(true);
     }//GEN-LAST:event_boton4PlayersMouseEntered
 
     private void boton4PlayersMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boton4PlayersMouseExited
         boton4Players.setBorder(null);
-        labelBackgroundMenu.setIcon(imagenOriginal);
+        jugador1.setVisible(false);
+        jugador2.setVisible(false);
+        jugador3.setVisible(false);
+        jugador4.setVisible(false);
     }//GEN-LAST:event_boton4PlayersMouseExited
 
-    private void boton5PlayersMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boton5PlayersMouseEntered
-        boton5Players.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        labelBackgroundMenu.setIcon(imagenCincoJugadores);
-    }//GEN-LAST:event_boton5PlayersMouseEntered
-
-    private void boton5PlayersMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boton5PlayersMouseExited
-        boton5Players.setBorder(null);
-        labelBackgroundMenu.setIcon(imagenOriginal);
-    }//GEN-LAST:event_boton5PlayersMouseExited
-
-    private void boton5PlayersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton5PlayersActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_boton5PlayersActionPerformed
-
+    
     /**
      * @param args the command line arguments
      */
@@ -311,8 +302,12 @@ public class OpcionesDeJuego extends javax.swing.JFrame {
     private javax.swing.JButton boton2Players;
     private javax.swing.JButton boton3Players;
     private javax.swing.JButton boton4Players;
-    private javax.swing.JButton boton5Players;
-    private javax.swing.JLabel labelBackgroundMenu;
+    private javax.swing.JLabel jugador1;
+    private javax.swing.JLabel jugador2;
+    private javax.swing.JLabel jugador3;
+    private javax.swing.JLabel jugador4;
+    private javax.swing.JLabel labelBackgroundMenu1;
     private javax.swing.JPanel vOpcionesDeJuego;
     // End of variables declaration//GEN-END:variables
 }
+

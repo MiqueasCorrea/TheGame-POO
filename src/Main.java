@@ -6,10 +6,16 @@ import controller.Controller;
 import view.vistagrafica.Login;
 import view.vistagrafica.VistaGrafica;
 
+import java.io.IOException;
+
 public class Main {
-    public static void main(String[] args) {
-//        Juego modelo = new Juego();
-//        Controller controlador1 = new Controller(modelo);
+    public static void main(String[] args) throws IOException {
+        Juego modelo = new Juego();
+        Controller controlador1 = new Controller(modelo);
+        VistaGrafica vistaGrafica = new VistaGrafica(controlador1);
+
+        Controller controlador2 = new Controller(modelo);
+        VistaGrafica vistaGrafica2 = new VistaGrafica(controlador2);
 //        IVista vista1 = new VistaConsola(controlador1);
 //        vista1.mostrarInicioSesion();
 
@@ -24,6 +30,5 @@ public class Main {
 //        Controller controlador4 = new Controller(modelo);
 //        IVista vista4 = new VistaConsola(controlador4);
 //        vista4.mostrarInicioSesion();
-        VistaGrafica vistaGrafica = new VistaGrafica();
     }
 }

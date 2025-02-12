@@ -62,9 +62,9 @@ public class Menu extends javax.swing.JFrame {
                 botonJugarActionPerformed(evt);
             }
         });
-        vMenu.add(botonJugar, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 50, 150, 50));
+        vMenu.add(botonJugar, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 130, 150, 60));
 
-        botonReglas.setBackground(new java.awt.Color(0,0,0,0));
+        botonReglas.setBackground(new java.awt.Color(255, 255, 255));
         botonReglas.setFont(new java.awt.Font("RETROTECH", 0, 48)); // NOI18N
         botonReglas.setForeground(new java.awt.Color(255, 255, 255));
         botonReglas.setText("Reglas");
@@ -84,10 +84,10 @@ public class Menu extends javax.swing.JFrame {
                 botonReglasActionPerformed(evt);
             }
         });
-        vMenu.add(botonReglas, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 150, 160, 40));
+        vMenu.add(botonReglas, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 230, 160, 60));
 
-        labelBackgroundMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/imagenes/file.gif"))); // NOI18N
-        vMenu.add(labelBackgroundMenu, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 900, 530));
+        labelBackgroundMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/imagenes/menu/menuGIf.gif"))); // NOI18N
+        vMenu.add(labelBackgroundMenu, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 960, 530));
 
         getContentPane().add(vMenu, java.awt.BorderLayout.CENTER);
 
@@ -95,7 +95,8 @@ public class Menu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void botonJugarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonJugarActionPerformed
-        vistaGrafica.mostrarOpcionesJuegoGrafica();
+        setVisible(false);
+        vistaGrafica.mostrarOpciones();
     }//GEN-LAST:event_botonJugarActionPerformed
 
     private void botonJugarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonJugarMouseEntered
@@ -115,7 +116,7 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_botonReglasMouseExited
 
     private void botonReglasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonReglasActionPerformed
-        vistaGrafica.mostrarReglas();
+        // TODO add your handling code here:
     }//GEN-LAST:event_botonReglasActionPerformed
 
     /**
