@@ -6,18 +6,22 @@ import model.interfaces.IJugador;
 
 import java.io.Serializable;
 
-public class Jugador implements IJugador, Serializable {
+public class Jugador implements IJugador, Serializable{
     private static final long serialVersionUID = 1L;
     private int id;
     private String nombre;
     private ICarta carta1;
     private ICarta carta2;
+    private boolean carta1_en_mano;
+    private boolean carta2_en_mano;
     private int cantidadCartasTiradas;
 
     public Jugador(String nombre) {
         this.nombre = nombre;
         id = new GeneradorUsuarioID().conseguirSiguienteID();
         cantidadCartasTiradas = 0;
+        carta1_en_mano = false;
+        carta2_en_mano = false;
     }
 
     // GETTERS
@@ -37,6 +41,16 @@ public class Jugador implements IJugador, Serializable {
         return id;
     }
 
+    @Override
+    public boolean isPrimeraCarta_en_mano() {
+        return carta1_en_mano;
+    }
+
+    @Override
+    public boolean isSegundaCarta_en_mano() {
+        return carta2_en_mano;
+    }
+
     public int getCantidadCartasTiradas() {
         return cantidadCartasTiradas;
     }
@@ -46,11 +60,23 @@ public class Jugador implements IJugador, Serializable {
         this.nombre = nombre;
     }
 
+    @Override
     public void setPrimeraCartaDelJugador(ICarta carta1){
         this.carta1 = carta1;
     }
 
+    @Override
     public void setSegundaCartaDelJugador(ICarta carta2){
         this.carta2 = carta2;
+    }
+
+    @Override
+    public void setPrimeraCarta_en_mano(boolean carta1_en_mano) {
+        this.carta1_en_mano = carta1_en_mano;
+    }
+
+    @Override
+    public void setSegundaCarta_en_mano(boolean carta2_en_mano) {
+        this.carta2_en_mano = carta2_en_mano;
     }
 }

@@ -2,10 +2,11 @@ package model.clases;
 import model.interfaces.IJugador;
 import model.interfaces.ITurno;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Queue;
 
-public class Turno implements ITurno{
+public class Turno implements ITurno, Serializable {
     private IJugador turnoActual;
     private Queue<IJugador> turnos;
     private int cantidadCartasTiradas;

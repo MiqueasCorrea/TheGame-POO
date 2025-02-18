@@ -1,26 +1,30 @@
 package controller;
+import ar.edu.unlu.rmimvc.cliente.IControladorRemoto;
+import ar.edu.unlu.rmimvc.observer.IObservableRemoto;
+import model.clases.ManejadorEventos;
 import model.clases.Modelo;
 import model.clases.Jugador;
 import model.clases.Partida;
 import model.enums.Estados;
 import model.enums.Eventos;
-import controller.interfaces.IObserver;
+import model.interfaces.ICarta;
 import model.interfaces.IJugador;
+import model.interfaces.IModelo;
 import model.interfaces.IPartida;
 import view.interfaces.IVista;
+
+import java.rmi.RemoteException;
 import java.util.List;
 
-public class Controller implements IObserver {
-    private Modelo modelo;
+public class Controller implements IControladorRemoto {
+    private IModelo modelo;
     private IJugador jugador;
     private IVista vista;
     private int id_partida_actual;
 
-    public Controller(Modelo modelo) {
-        this.modelo = modelo;
-    }
+    public Controller(){}
 
-    public Modelo getModelo(){
+    public IModelo getModelo(){
         return this.modelo;
     }
 
@@ -28,30 +32,56 @@ public class Controller implements IObserver {
         this.vista = vista;
     }
 
+    @Override
+    public <T extends IObservableRemoto> void setModeloRemoto(T modelo){
+        this.modelo = (IModelo) modelo;
+    }
+
     // GESTION PARTIDAS
-    public List<IPartida> getPartidas(){
+    public List<IPartida> getPartidas() throws RemoteException {
         return this.modelo.getPartidas();
     }
 
-    public IPartida crearPartida(int cantidadJugadores){
-        return modelo.crearPartida(cantidadJugadores);
+    public void crearPartida(int cantidadJugadores) throws RemoteException {
+        IPartida partida= modelo.crearPartida(cantidadJugadores);
+        setId_partida_actual(partida.getId());
     }
 
-    public void agregarJugadorAPartida(IPartida partida, IJugador jugador){
-        modelo.agregarJugadorAPartida(partida, jugador);
+    public void agregarJugadorAPartida(int id_partida) throws RemoteException{
+        vista.setEstado(Estados.EN_ESPERANDO_JUGADORES);
+        setId_partida_actual(id_partida);
+        modelo.agregarJugadorAPartida(id_partida, jugador);
     }
 
-    public void setId_partida_actual(int id){
+    public void agregarJugadorAPartida() throws RemoteException{
+        vista.setEstado(Estados.EN_ESPERANDO_JUGADORES);
+        modelo.agregarJugadorAPartida(id_partida_actual, jugador);
+    }
+
+    public void setId_partida_actual(int id) {
         this.id_partida_actual = id;
     }
 
-    public IPartida getPartidaActual(){
+    public IPartida getPartidaActual() throws RemoteException{
         return modelo.getPartida(id_partida_actual);
     }
 
+    public void empezarPartida() throws RemoteException{
+        vista.setEstado(Estados.EN_JUEGO);
+        modelo.empezarPartida(id_partida_actual);
+    }
+
+    public IJugador getTurno() throws RemoteException{
+        return modelo.getTurno(id_partida_actual);
+    }
+
+    public void jugarTurno(int zonasMano, int zonasCentro) throws RemoteException {
+        modelo.jugarTurno(id_partida_actual, zonasMano, zonasCentro);
+    }
+
     // GESTION USUARIOS-OBSERVADORES
-    public void conectarJugador(String nombre){
-        this.jugador = this.modelo.conectarUsuario(nombre, this);
+    public void conectarJugador(String nombre) throws RemoteException{
+        this.jugador = this.modelo.conectarUsuario(nombre);
     }
 
     public IJugador getJugador(){
@@ -67,12 +97,12 @@ public class Controller implements IObserver {
     }
 
     @Override
-    public void update(int id_partida, Object arg) {
-        if (arg instanceof Eventos evento) {
+    public void actualizar(IObservableRemoto iObservableRemoto, Object o) throws RemoteException {
+        if (o instanceof ManejadorEventos evento) {
 
-            switch (evento) {
+            switch (evento.getEvento()) {
                 case CAMBIO_ESPERANDO_JUGADORES -> {
-                    if (id_partida_actual != id_partida){return;}
+                    if (id_partida_actual != evento.getId()){return;}
                     if (vista.getEstado() == Estados.EN_ESPERANDO_JUGADORES) {
                         vista.esperandoJugadores();
                     }
@@ -82,27 +112,12 @@ public class Controller implements IObserver {
                         vista.buscarPartidas();
                     }
                 }
-//                case ACTUALIZACION_CARTA:
-//                    if (id_partida_actual != id_partida){return;}
-//                    if (this.vista.getEstado() == Estados.EN_JUEGO){
-//                        this.vista.mostrarJuego(partida);
-//                    }
-//                    break;
-//                case CAMBIO_TURNO:
-//                    if (this.vista.getEstado() == Estados.EN_JUEGO){
-//                        this.vista.mostrarJuego(partida);
-//                    }
-//                    break;
-//                case GAME_OVER:
-//                    if (this.vista.getEstado() == Estados.EN_JUEGO){
-//                        this.vista.gameOver(partida);
-//                    }
-//                    break;
-//                case GAME_WIN:
-//                    if (this.vista.getEstado() == Estados.EN_JUEGO){
-//                        this.vista.gameWin(partida);
-//                    }
-//                    break;
+                case ACTUALIZACION_CARTA -> {
+                    if (id_partida_actual != evento.getId()){return;}
+                    if (vista.getEstado() == Estados.EN_JUEGO) {
+                        vista.mostrarPartida();
+                    }
+                }
                 default -> {}
             }
         }

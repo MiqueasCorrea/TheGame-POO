@@ -5,10 +5,12 @@
 package view.frames;
 
 import model.clases.Partida;
+import model.enums.Estados;
 import model.interfaces.IPartida;
 import view.vistas.VistaGrafica;
 
 import java.awt.*;
+import java.rmi.RemoteException;
 import javax.swing.*;
 
 /**
@@ -85,11 +87,8 @@ public class BuscarPartida extends javax.swing.JFrame {
         panelPartidas.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         panelPartidas.setOpaque(false);
         panelPartidas.setLayout(new javax.swing.BoxLayout(panelPartidas, javax.swing.BoxLayout.Y_AXIS));
-
         jScrollPane1.setOpaque(false);
         jScrollPane1.getViewport().setOpaque(false);
-        jScrollPane1.getViewport().setBackground(new Color(0, 0, 0, 0));
-        jScrollPane1.setBorder(null);
         jScrollPane1.setViewportView(panelPartidas);
 
         vOpcionesDeJuego.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 60, 730, 400));
@@ -134,7 +133,7 @@ public class BuscarPartida extends javax.swing.JFrame {
         Volver.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
     }//GEN-LAST:event_VolverMouseEntered
 
-    public void encontrarPartidas(){
+    public void encontrarPartidas() throws RemoteException{
         panelPartidas.removeAll();
         int i = 1;
         for (IPartida partida : vistaGrafica.getControlador().getPartidas()){
@@ -157,9 +156,11 @@ public class BuscarPartida extends javax.swing.JFrame {
             button.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     setVisible(false);
-                    vistaGrafica.getControlador().agregarJugadorAPartida(partida, vistaGrafica.getControlador().getJugador());
-                    vistaGrafica.getControlador().setId_partida_actual(partida.getId());
-                    vistaGrafica.esperandoJugadores();
+                    try {
+                        vistaGrafica.getControlador().agregarJugadorAPartida(partida.getId());
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             });
             panelPartidas.add(button);

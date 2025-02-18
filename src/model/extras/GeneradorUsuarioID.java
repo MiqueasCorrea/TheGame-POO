@@ -6,13 +6,13 @@ import java.io.Serializable;
 
 public class GeneradorUsuarioID implements IGeneradorID, Serializable {
     private static final long serialVersionUID = 1L;
-    private static Serializador serializador = new Serializador("src/data/ultimo_id_usuario.dat");
+    private Serializador serializador = new Serializador("src/data/ultimo_id_usuario.dat");
     int ID = 0;
 
     public GeneradorUsuarioID(){
         Object id = serializador.readFirstObject();
         if (id != null){
-            System.out.println("ULTIMO ID: " + (int) id);
+            System.out.println("ULTIMO ID USUARIO: " + (int) id);
             ID = (int) id;
         }
         else{

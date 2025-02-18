@@ -7,21 +7,21 @@ package view.frames;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.MouseEvent;
+import java.rmi.RemoteException;
 import java.util.List;
 import javax.swing.border.Border;
 import javax.swing.event.MouseInputAdapter;
 
 
 public class Draggable extends JComponent {
+    private final Point originalLocation;
     private PartidaEnJuego context;
     private List<JPanel> centerZone;
+    private boolean isDragging = false;
     private List<JPanel> handZone;
     private Point pointPressed;
-    private final Point originalLocation;
-    private final JComponent draggable;
     private boolean action = false;
-    private boolean isDragging = false;
-    private int contador = 0;
+    private final JComponent draggable;
 
     public Draggable(final JComponent component, final int x, final int y,PartidaEnJuego context, List<JPanel> centerZone, List<JPanel> handZone) {
         this.context = context;
@@ -82,8 +82,8 @@ public class Draggable extends JComponent {
 //            enableRepaint();
             Point pointReleased = SwingUtilities.convertPoint(Draggable.this, e.getPoint(), getParent());
             setLocation(originalLocation);
-            int indexCenter = 0;
-            int indexCard = 0;
+            int zonasCentro = 0;
+            int zonasMano = 0;
             if (action){
                 for (JPanel center : centerZone){
                     if (center.getBounds().contains(pointReleased)){
@@ -91,28 +91,19 @@ public class Draggable extends JComponent {
                             Point realPos = originalLocation.getLocation();
                             realPos.translate(60,0);
                             if (card.getBounds().contains(realPos)){
-                                System.out.println("TIRO CARTA BIEN " + contador);
-                                contador ++;
-//                                context.getController().playTurn(indexCard,indexCenter);
+//                                context.getController().playTurn(zonasMano,zonasCentro);
+                                try {
+                                    context.getController().jugarTurno(zonasMano, zonasCentro);
+                                } catch (RemoteException ex) {
+                                    throw new RuntimeException(ex);
+                                }
                             }
-                            indexCard++;
+                            zonasMano++;
                         }
                     }
-                    indexCenter++;
+                    zonasCentro++;
                 }
             }
         }
     }
-
-//    public void disableRepaint(){
-//        for (Component component : context.getComponents()){
-//            component.setIgnoreRepaint(true);
-//        }
-//    }
-//
-//    public void enableRepaint(){
-//        for (Component component : context.getComponents()){
-//            component.setIgnoreRepaint(false);
-//        }
-//    }
 }

@@ -130,7 +130,7 @@
         <Component class="javax.swing.JLabel" name="labelBackgroundMenu1">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/view/imagenes/menu/buscarPartida.gif"/>
+              <Image iconType="3" name="/view/recursos/menu/buscador_partida/buscarPartida.gif"/>
             </Property>
           </Properties>
           <Constraints>

@@ -3,7 +3,9 @@ package model.clases;
 import model.enums.EnumColor;
 import model.interfaces.ICarta;
 
-public class Carta implements ICarta {
+import java.io.Serializable;
+
+public class Carta implements ICarta, Serializable {
     private int numero;
     private EnumColor color;
     private boolean enMano;
@@ -23,6 +25,7 @@ public class Carta implements ICarta {
      * Este metodo de instancia devuelve el atributo encapsulado "numero".
      * @return int con el numero del atributo numero
      */
+    @Override
     public int getNumero() {
         return numero;
     }

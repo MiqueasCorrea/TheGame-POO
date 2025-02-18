@@ -6,6 +6,8 @@ package view.frames;
 
 import view.vistas.VistaGrafica;
 
+import java.rmi.RemoteException;
+
 /**
  *
  * @author miqueas
@@ -88,7 +90,11 @@ public class Opciones extends javax.swing.JFrame {
         });
         botonBuscarPartida.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                botonBuscarPartidaActionPerformed(evt);
+                try {
+                    botonBuscarPartidaActionPerformed(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         vOpciones.add(botonBuscarPartida, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 190, 230, 40));
@@ -163,7 +169,7 @@ public class Opciones extends javax.swing.JFrame {
         botonBuscarPartida.setBorder(null);
     }//GEN-LAST:event_botonBuscarPartidaMouseExited
 
-    private void botonBuscarPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonBuscarPartidaActionPerformed
+    private void botonBuscarPartidaActionPerformed(java.awt.event.ActionEvent evt) throws RemoteException {//GEN-FIRST:event_botonBuscarPartidaActionPerformed
         // TODO add your handling code here:
         setVisible(false);
         vistaGrafica.buscarPartidas();

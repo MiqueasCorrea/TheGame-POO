@@ -7,6 +7,8 @@ package view.frames;
 
 import view.vistas.VistaGrafica;
 
+import java.rmi.RemoteException;
+
 /**
  *
  * @author miqueas
@@ -71,7 +73,11 @@ public class Login extends javax.swing.JFrame {
         jBotonLogin.setDefaultCapable(false);
         jBotonLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jBotonLoginActionPerformed(evt);
+                try {
+                    jBotonLoginActionPerformed(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         vLogin.add(jBotonLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 440, 160, 30));
@@ -98,7 +104,7 @@ public class Login extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldLoginActionPerformed
 
-    private void jBotonLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonLoginActionPerformed
+    private void jBotonLoginActionPerformed(java.awt.event.ActionEvent evt) throws RemoteException {//GEN-FIRST:event_jBotonLoginActionPerformed
         if (jTextFieldLogin.getText() != null && !jTextFieldLogin.getText().isEmpty()) {
             vistaGrafica.getControlador().conectarJugador(jTextFieldLogin.getText());
             setVisible(false);

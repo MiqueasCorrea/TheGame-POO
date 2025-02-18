@@ -4,11 +4,12 @@ import model.enums.EnumColor;
 import model.interfaces.ICarta;
 import model.interfaces.IMazo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Mazo implements IMazo {
+public class Mazo implements IMazo, Serializable {
     private List<ICarta> cartas;
     private int cantidadCartas;
 

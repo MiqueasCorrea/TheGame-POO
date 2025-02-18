@@ -7,6 +7,8 @@ package view.frames;
 
 import view.vistas.VistaGrafica;
 
+import java.rmi.RemoteException;
+
 /**
  *
  * @author miqueas
@@ -76,7 +78,11 @@ public class OpcionesDeJuego extends javax.swing.JFrame {
         });
         boton2Players.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                boton2PlayersActionPerformed(evt);
+                try {
+                    boton2PlayersActionPerformed(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         vOpcionesDeJuego.add(boton2Players, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 140, -1, -1));
@@ -98,7 +104,11 @@ public class OpcionesDeJuego extends javax.swing.JFrame {
         });
         boton3Players.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                boton3PlayersActionPerformed(evt);
+                try {
+                    boton3PlayersActionPerformed(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         vOpcionesDeJuego.add(boton3Players, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 210, -1, -1));
@@ -120,7 +130,11 @@ public class OpcionesDeJuego extends javax.swing.JFrame {
         });
         boton4Players.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                boton4PlayersActionPerformed(evt);
+                try {
+                    boton4PlayersActionPerformed(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         vOpcionesDeJuego.add(boton4Players, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 290, -1, -1));
@@ -182,23 +196,20 @@ public class OpcionesDeJuego extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void boton3PlayersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton3PlayersActionPerformed
-        vistaGrafica.crearPartida(3);
+    private void boton3PlayersActionPerformed(java.awt.event.ActionEvent evt) throws RemoteException{//GEN-FIRST:event_boton3PlayersActionPerformed
         setVisible(false);
-        vistaGrafica.esperandoJugadores();
+        vistaGrafica.crearPartida(3);
     }//GEN-LAST:event_boton3PlayersActionPerformed
 
-    private void boton2PlayersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton2PlayersActionPerformed
+    private void boton2PlayersActionPerformed(java.awt.event.ActionEvent evt) throws RemoteException {//GEN-FIRST:event_boton2PlayersActionPerformed
         // TODO add your handling code here:
-        vistaGrafica.crearPartida(2);
         setVisible(false);
-        vistaGrafica.esperandoJugadores();
+        vistaGrafica.crearPartida(2);
     }//GEN-LAST:event_boton2PlayersActionPerformed
 
-    private void boton4PlayersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton4PlayersActionPerformed
-        vistaGrafica.crearPartida(4);
+    private void boton4PlayersActionPerformed(java.awt.event.ActionEvent evt) throws RemoteException{//GEN-FIRST:event_boton4PlayersActionPerformed
         setVisible(false);
-        vistaGrafica.esperandoJugadores();
+        vistaGrafica.crearPartida(4);
     }//GEN-LAST:event_boton4PlayersActionPerformed
 
     private void VolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VolverActionPerformed

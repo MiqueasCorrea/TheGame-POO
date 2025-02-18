@@ -2,5 +2,7 @@ package model.clases;
 
 import model.interfaces.IRanking;
 
-public class Ranking implements IRanking {
+import java.io.Serializable;
+
+public class Ranking implements IRanking, Serializable {
 }

@@ -4,9 +4,17 @@
  */
 package view.frames;
 
+import controller.Controller;
+import model.clases.Carta;
+import model.clases.Jugador;
+import model.enums.EnumColor;
+import model.interfaces.ICarta;
+import model.interfaces.IJugador;
 import model.interfaces.IPartida;
 import view.vistas.VistaGrafica;
 
+import java.rmi.RemoteException;
+import java.time.Instant;
 import java.util.List;
 import java.util.ArrayList;
 import javax.swing.*;
@@ -37,6 +45,10 @@ public class PartidaEnJuego extends javax.swing.JFrame {
         this.vistaGrafica = vistaGrafica;
     }
 
+    public Controller getController(){
+        return vistaGrafica.getControlador();
+    }
+
 
     private void inicializarZonas() {
         // Crear paneles donde se pueden soltar cartas
@@ -51,10 +63,8 @@ public class PartidaEnJuego extends javax.swing.JFrame {
     }
 
     private void agregarCartasDraggables() {
-        Draggable draggable = new Draggable(carta1, handZone.get(0).getX(), handZone.get(0).getY(), this, centerZone, handZone);
-        Draggable draggable2 = new Draggable(carta2, handZone.get(1).getX(), handZone.get(1).getY(), this, centerZone, handZone);
-        draggable.setAction(true);
-        draggable2.setAction(true);
+        draggable = new Draggable(carta1, handZone.get(0).getX(), handZone.get(0).getY(), this, centerZone, handZone);
+        draggable2 = new Draggable(carta2, handZone.get(1).getX(), handZone.get(1).getY(), this, centerZone, handZone);
         this.getContentPane().add(draggable);
         this.getContentPane().add(draggable2);
         this.getContentPane().setComponentZOrder(draggable, 0);
@@ -75,88 +85,66 @@ public class PartidaEnJuego extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        vOpcionesDeJuego = new javax.swing.JPanel();
+        vPartidaEnJuego = new javax.swing.JPanel();
         mazo = new javax.swing.JButton();
-        labelEsperandoJugadores = new javax.swing.JLabel();
+        labelEstadoPartida = new javax.swing.JLabel();
         nombreJugador2 = new javax.swing.JLabel();
         nombreJugador3 = new javax.swing.JLabel();
         nombreJugador4 = new javax.swing.JLabel();
-        carta2 = new javax.swing.JLabel();
         carta1 = new javax.swing.JLabel();
-        zonaCartaAlta = new javax.swing.JPanel();
-        zonaCartaBaja = new javax.swing.JPanel();
+        carta2 = new javax.swing.JLabel();
         zonaManoCarta2 = new javax.swing.JPanel();
         zonaManoCarta1 = new javax.swing.JPanel();
+        zonaCartaAlta = new javax.swing.JPanel();
+        labelCartaAlta = new javax.swing.JLabel();
+        zonaCartaBaja = new javax.swing.JPanel();
+        labelCartaBaja = new javax.swing.JLabel();
         dedo = new javax.swing.JLabel();
         labelBackgroundMenu1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        vOpcionesDeJuego.setDoubleBuffered(false);
-        vOpcionesDeJuego.setOpaque(false);
-        vOpcionesDeJuego.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        vPartidaEnJuego.setDoubleBuffered(false);
+        vPartidaEnJuego.setOpaque(false);
+        vPartidaEnJuego.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        mazo.setBorder(null);
+        mazo.setContentAreaFilled(false);
         mazo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mazoActionPerformed(evt);
             }
         });
-        mazo.setBorder(null);
-        mazo.setContentAreaFilled(false);
-        vOpcionesDeJuego.add(mazo, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 300, 60, 90));
+        vPartidaEnJuego.add(mazo, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 300, 60, 90));
 
-        labelEsperandoJugadores.setFont(new java.awt.Font("RETROTECH", 0, 36)); // NOI18N
-        labelEsperandoJugadores.setForeground(new java.awt.Color(255, 255, 255));
-        labelEsperandoJugadores.setText("Esperando jugadores...");
-        vOpcionesDeJuego.add(labelEsperandoJugadores, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 0, -1, -1));
+        labelEstadoPartida.setFont(new java.awt.Font("RETROTECH", 0, 36)); // NOI18N
+        labelEstadoPartida.setForeground(new java.awt.Color(255, 255, 255));
+        labelEstadoPartida.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelEstadoPartida.setText("Esperando jugadores...");
+        vPartidaEnJuego.add(labelEstadoPartida, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 20, 580, -1));
 
         nombreJugador2.setFont(new java.awt.Font("RETROTECH", 0, 24)); // NOI18N
         nombreJugador2.setForeground(new java.awt.Color(255, 255, 255));
-        vOpcionesDeJuego.add(nombreJugador2, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 40, -1, -1));
+        nombreJugador2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        vPartidaEnJuego.add(nombreJugador2, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 50, 270, 30));
 
         nombreJugador3.setFont(new java.awt.Font("RETROTECH", 0, 24)); // NOI18N
         nombreJugador3.setForeground(new java.awt.Color(255, 255, 255));
-        vOpcionesDeJuego.add(nombreJugador3, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 90, -1, -1));
+        nombreJugador3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        vPartidaEnJuego.add(nombreJugador3, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 101, 300, 30));
 
         nombreJugador4.setFont(new java.awt.Font("RETROTECH", 0, 24)); // NOI18N
         nombreJugador4.setForeground(new java.awt.Color(255, 255, 255));
-        vOpcionesDeJuego.add(nombreJugador4, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 90, -1, -1));
+        nombreJugador4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        vPartidaEnJuego.add(nombreJugador4, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 90, 270, 30));
 
-        carta2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/cartas/azul/AZUL2.png"))); // NOI18N
-        vOpcionesDeJuego.add(carta2, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 440, 140, 210));
+        carta1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/cartas/AMARILLO/AMARILLO1.png"))); // NOI18N
+        carta1.setVisible(false);
+        vPartidaEnJuego.add(carta1, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 470, -1, -1));
 
-        carta1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/cartas/blanco/BLANCO3.png"))); // NOI18N
-        vOpcionesDeJuego.add(carta1, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 460, -1, 220));
-
-        zonaCartaAlta.setOpaque(false);
-
-        javax.swing.GroupLayout zonaCartaAltaLayout = new javax.swing.GroupLayout(zonaCartaAlta);
-        zonaCartaAlta.setLayout(zonaCartaAltaLayout);
-        zonaCartaAltaLayout.setHorizontalGroup(
-            zonaCartaAltaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 350, Short.MAX_VALUE)
-        );
-        zonaCartaAltaLayout.setVerticalGroup(
-            zonaCartaAltaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 110, Short.MAX_VALUE)
-        );
-
-        vOpcionesDeJuego.add(zonaCartaAlta, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 230, 350, 110));
-
-        zonaCartaBaja.setOpaque(false);
-
-        javax.swing.GroupLayout zonaCartaBajaLayout = new javax.swing.GroupLayout(zonaCartaBaja);
-        zonaCartaBaja.setLayout(zonaCartaBajaLayout);
-        zonaCartaBajaLayout.setHorizontalGroup(
-            zonaCartaBajaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 440, Short.MAX_VALUE)
-        );
-        zonaCartaBajaLayout.setVerticalGroup(
-            zonaCartaBajaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 90, Short.MAX_VALUE)
-        );
-
-        vOpcionesDeJuego.add(zonaCartaBaja, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 350, 440, 90));
+        carta2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/cartas/AMARILLO/AMARILLO1.png"))); // NOI18N
+        carta2.setVisible(false);
+        vPartidaEnJuego.add(carta2, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 420, -1, -1));
 
         zonaManoCarta2.setOpaque(false);
 
@@ -171,7 +159,7 @@ public class PartidaEnJuego extends javax.swing.JFrame {
             .addGap(0, 190, Short.MAX_VALUE)
         );
 
-        vOpcionesDeJuego.add(zonaManoCarta2, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 440, 140, 190));
+        vPartidaEnJuego.add(zonaManoCarta2, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 440, 140, 190));
 
         zonaManoCarta1.setOpaque(false);
 
@@ -186,13 +174,59 @@ public class PartidaEnJuego extends javax.swing.JFrame {
             .addGap(0, 220, Short.MAX_VALUE)
         );
 
-        vOpcionesDeJuego.add(zonaManoCarta1, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 460, 140, 220));
+        vPartidaEnJuego.add(zonaManoCarta1, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 460, 140, 220));
+
+        zonaCartaAlta.setOpaque(false);
+
+        labelCartaAlta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/cartas/perspectiva/ROJO/perspV1 (2).png"))); // NOI18N
+        labelCartaAlta.setVisible(false);
+
+        javax.swing.GroupLayout zonaCartaAltaLayout = new javax.swing.GroupLayout(zonaCartaAlta);
+        zonaCartaAlta.setLayout(zonaCartaAltaLayout);
+        zonaCartaAltaLayout.setHorizontalGroup(
+            zonaCartaAltaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(zonaCartaAltaLayout.createSequentialGroup()
+                .addGap(126, 126, 126)
+                .addComponent(labelCartaAlta, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(164, Short.MAX_VALUE))
+        );
+        zonaCartaAltaLayout.setVerticalGroup(
+            zonaCartaAltaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(zonaCartaAltaLayout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addComponent(labelCartaAlta, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        vPartidaEnJuego.add(zonaCartaAlta, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 230, 350, 110));
+
+        zonaCartaBaja.setOpaque(false);
+
+        labelCartaBaja.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/cartas/perspectiva/ROJO/perspV1 (2).png"))); // NOI18N
+        labelCartaBaja.setVisible(false);
+
+        javax.swing.GroupLayout zonaCartaBajaLayout = new javax.swing.GroupLayout(zonaCartaBaja);
+        zonaCartaBaja.setLayout(zonaCartaBajaLayout);
+        zonaCartaBajaLayout.setHorizontalGroup(
+            zonaCartaBajaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(zonaCartaBajaLayout.createSequentialGroup()
+                .addGap(140, 140, 140)
+                .addComponent(labelCartaBaja, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(240, Short.MAX_VALUE))
+        );
+        zonaCartaBajaLayout.setVerticalGroup(
+            zonaCartaBajaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(zonaCartaBajaLayout.createSequentialGroup()
+                .addComponent(labelCartaBaja, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 10, Short.MAX_VALUE))
+        );
+
+        vPartidaEnJuego.add(zonaCartaBaja, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 350, 440, 90));
 
         dedo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/mesa/dedonuevo.png"))); // NOI18N
-        vOpcionesDeJuego.add(dedo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1270, 720));
+        vPartidaEnJuego.add(dedo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1270, 720));
 
         labelBackgroundMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/mesa/mesa4jugadores.png"))); // NOI18N
-        vOpcionesDeJuego.add(labelBackgroundMenu1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1270, 720));
+        vPartidaEnJuego.add(labelBackgroundMenu1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1270, 720));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -200,14 +234,14 @@ public class PartidaEnJuego extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(vOpcionesDeJuego, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(vPartidaEnJuego, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(vOpcionesDeJuego, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(vPartidaEnJuego, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -219,33 +253,103 @@ public class PartidaEnJuego extends javax.swing.JFrame {
         System.out.println("TOCO EL MAZO");
     }//GEN-LAST:event_mazoActionPerformed
 
-    public void mostrarJugadoresEnMesa(){
+    public void mostrarJugadoresEnMesa() throws RemoteException {
         IPartida partida = vistaGrafica.getControlador().getPartidaActual();
-        switch (partida.getCantidadJugadoresEnLaPartida()){
+
+        // Obtener la posición de "mi jugador" en la partida
+        int miPosicion = partida.getPosicionJugador(vistaGrafica.getControlador().getJugador());
+
+        // Obtener el total de jugadores en la partida
+        int cantidadJugadores = partida.getCantidadJugadoresEnLaPartida();
+
+        // Ajustar nombres en orden relativo a miPosicion
+        switch (cantidadJugadores) {
             case 1 -> {
                 labelBackgroundMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/mesa/mesa1jugadores.png")));
-            } // NOI18N
+            }
             case 2 -> {
-                String nombre = partida.getJugador(1).getNombre();
-                nombreJugador2.setText(nombre);
+                nombreJugador2.setText(partida.getJugador((miPosicion + 1) % cantidadJugadores).getNombre());
                 labelBackgroundMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/mesa/mesa2jugadores.png")));
-            } // NOI18N
+            }
             case 3 -> {
-                String nombre = partida.getJugador(2).getNombre();
-                nombreJugador3.setText(nombre);
+                nombreJugador2.setText(partida.getJugador((miPosicion + 1) % cantidadJugadores).getNombre());
+                nombreJugador3.setText(partida.getJugador((miPosicion + 2) % cantidadJugadores).getNombre());
                 labelBackgroundMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/mesa/mesa3jugadores.png")));
-            } // NOI18N
+            }
             case 4 -> {
-                String nombre = partida.getJugador(3).getNombre();
-                nombreJugador4.setText(nombre);
+                nombreJugador2.setText(partida.getJugador((miPosicion + 1) % cantidadJugadores).getNombre());
+                nombreJugador3.setText(partida.getJugador((miPosicion + 2) % cantidadJugadores).getNombre());
+                nombreJugador4.setText(partida.getJugador((miPosicion + 3) % cantidadJugadores).getNombre());
                 labelBackgroundMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/mesa/mesa4jugadores.png")));
-            } // NOI18N
+            }
             default -> throw new IllegalArgumentException("Cantidad de jugadores no soportada");
         }
+
+        verificarIniciarPartida(partida);
+    }
+
+    public void verificarIniciarPartida(IPartida partida) throws RemoteException {
         if (partida.getCantidadJugadoresTotales() == partida.getCantidadJugadoresEnLaPartida()){
-            labelEsperandoJugadores.setVisible(false);
             vistaGrafica.empezarPartida();
         }
+    }
+
+    public void mostrarCartas() throws RemoteException {
+        for (IJugador jugador : getController().getPartidaActual().getJugadoresEnLaPartida()) {
+            if (jugador.getId() == getController().getIdJugador()) {
+                System.out.println("-------------------");
+                ICarta carta1Vista = jugador.getPrimeraCartaDelJugador();
+                ICarta carta2Vista = jugador.getSegundaCartaDelJugador();
+
+                SwingUtilities.invokeLater(() -> {
+                    if (jugador.isPrimeraCarta_en_mano()) {
+                        carta1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/cartas/" + carta1Vista.getColor().name() + "/" + carta1Vista.getColor().name() + carta1Vista.getNumero() + ".png")));
+                        carta1.setVisible(true);
+                    } else {
+                        draggable.setAction(false);
+                        carta1.setVisible(false);
+                    }
+
+                    if (jugador.isSegundaCarta_en_mano()) {
+                        carta2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/cartas/" + carta2Vista.getColor().name() + "/" + carta2Vista.getColor().name() + carta2Vista.getNumero() + ".png")));
+                        carta2.setVisible(true);
+                    } else {
+                        draggable2.setAction(false);
+                        carta2.setVisible(false);
+                    }
+                });
+            }
+        }
+    }
+
+    public void mostrarTurno() throws RemoteException {
+        IJugador turno_jugador = getController().getTurno();
+        labelEstadoPartida.setText("Turno de " + turno_jugador.getNombre());
+        if (turno_jugador.getId() == getController().getIdJugador()){
+            System.out.println("TURNO DE " + turno_jugador.getNombre());
+            draggable.setAction(true);
+            draggable2.setAction(true);
+        } else{
+            draggable.setAction(false);
+            draggable2.setAction(false);
+        }
+    }
+
+    public void mostrarTablero() throws RemoteException{
+        ICarta cartaAlta = getController().getPartidaActual().getCartaAlta();
+        ICarta cartaBaja = getController().getPartidaActual().getCartaBaja();
+        
+        if (cartaBaja.getColor() != EnumColor.PURPURA){
+            labelCartaBaja.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/cartas/perspectiva/" + cartaBaja.getColor().name() + "/" + cartaBaja.getColor().name() + cartaBaja.getNumero() + ".png")));
+            labelCartaBaja.setVisible(true);
+        }
+        if (cartaAlta.getColor() != EnumColor.PURPURA){
+            labelCartaAlta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/cartas/perspectiva/" + cartaAlta.getColor().name() + "/" + cartaAlta.getColor().name() + cartaAlta.getNumero() + ".png")));
+            labelCartaAlta.setVisible(true);
+        }
+        System.out.println("-------------------");
+        System.out.println("CARTA ALTA: " + "[" + cartaAlta.getColor().name() + " " + cartaAlta.getNumero() + "]");
+        System.out.println("CARTA BAJA: " + "[" + cartaBaja.getColor().name() + " " + cartaBaja.getNumero() + "]");
     }
     /**
      * @param args the command line arguments
@@ -288,12 +392,16 @@ public class PartidaEnJuego extends javax.swing.JFrame {
     private javax.swing.JLabel carta2;
     private javax.swing.JLabel dedo;
     private javax.swing.JLabel labelBackgroundMenu1;
-    private javax.swing.JLabel labelEsperandoJugadores;
+    private javax.swing.JLabel labelCartaAlta;
+    private javax.swing.JLabel labelCartaBaja;
+    private javax.swing.JLabel labelEstadoPartida;
     private javax.swing.JButton mazo;
+    private Draggable draggable;
+    private Draggable draggable2;
     private javax.swing.JLabel nombreJugador2;
     private javax.swing.JLabel nombreJugador3;
     private javax.swing.JLabel nombreJugador4;
-    private javax.swing.JPanel vOpcionesDeJuego;
+    private javax.swing.JPanel vPartidaEnJuego;
     private javax.swing.JPanel zonaCartaAlta;
     private javax.swing.JPanel zonaCartaBaja;
     private javax.swing.JPanel zonaManoCarta1;

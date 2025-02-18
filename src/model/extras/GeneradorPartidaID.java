@@ -6,10 +6,11 @@ import java.io.Serializable;
 
 public class GeneradorPartidaID implements IGeneradorID, Serializable {
     private static final long serialVersionUID = 1L;
-    private static Serializador serializador = new Serializador("src/data/ultimo_id_partida.dat");
+    private Serializador serializador = new Serializador("src/data/ultimo_id_partida.dat");
     int ID = 0;
 
     public GeneradorPartidaID(){
+//        serializador.writeOneObject(ID);
         Object id = serializador.readFirstObject();
         if (id != null){
             System.out.println("ULTIMO ID PARTIDA: " + (int) id);
