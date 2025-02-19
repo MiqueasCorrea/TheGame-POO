@@ -10,6 +10,7 @@ import ar.edu.unlu.rmimvc.Util;
 import ar.edu.unlu.rmimvc.cliente.Cliente;
 import controller.Controller;
 import view.interfaces.IVista;
+import view.vistas.VistaConsola;
 import view.vistas.VistaGrafica;
 
 public class AppCliente {
@@ -51,7 +52,7 @@ public class AppCliente {
 //                null,
 //                8888
 //        );
-        IVista vista = new VistaGrafica();
+        IVista vista = new VistaConsola();
         Cliente c = new Cliente(ip, Integer.parseInt(port), ipServidor, Integer.parseInt(portServidor));
         vista.login();
         try {

@@ -5,6 +5,7 @@ import controller.interfaces.IObserver;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Map;
 
 public interface IModelo extends IObservableRemoto {
     // GESTION PARTIDAS
@@ -28,5 +29,8 @@ public interface IModelo extends IObservableRemoto {
 
     List<IJugador> getUsuarios() throws RemoteException;
     void siguienteTurno(int id_partida) throws RemoteException;
-    void gameOver(int id_partida) throws RemoteException;
+    boolean gameOver(int id_partida) throws RemoteException;
+    boolean gameWin(int id_partida) throws RemoteException;
+    void actualizarRanking(String nombre) throws RemoteException;
+    Map<String, Integer> getRanking() throws RemoteException;
 }

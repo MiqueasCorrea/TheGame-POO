@@ -214,4 +214,9 @@ public class Partida implements IPartida, Serializable {
                 &&
                 !verificarMovimiento(jugador.getSegundaCartaDelJugador(), cartaBaja);
     }
+
+    @Override
+    public boolean gameWin(){
+        return mazo.getCantidadCartas() <= 0;
+    }
 }

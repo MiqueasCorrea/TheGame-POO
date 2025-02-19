@@ -30,6 +30,7 @@ public class VistaGrafica implements IVista{
     private BuscarPartida buscarPartida;
     private PartidaEnJuego partida_en_juego;
     private Reglas reglas;
+    private Ranking ranking;
     private Estados estado;
     
     public VistaGrafica() throws RemoteException {
@@ -42,6 +43,7 @@ public class VistaGrafica implements IVista{
         buscarPartida = new BuscarPartida();
         partida_en_juego = new PartidaEnJuego();
         reglas = new Reglas();
+        ranking = new Ranking();
         
         login.setVistaGrafica(this);
         menu.setVistaGrafica(this);
@@ -50,6 +52,7 @@ public class VistaGrafica implements IVista{
         buscarPartida.setVistaGrafica(this);
         partida_en_juego.setVistaGrafica(this);
         reglas.setVistaGrafica(this);
+        ranking.setVistaGrafica(this);
     }
 
     @Override
@@ -93,7 +96,6 @@ public class VistaGrafica implements IVista{
 
     @Override
     public void esperandoJugadores() throws RemoteException{
-        System.out.println(partida_en_juego + ": TEST");
         partida_en_juego.setVisible(true);
         partida_en_juego.mostrarJugadoresEnMesa();
     };
@@ -119,6 +121,11 @@ public class VistaGrafica implements IVista{
     }
 
     @Override
+    public void mostrarGameWin() throws RemoteException {
+        partida_en_juego.mostrarGameWin();
+    }
+
+    @Override
     public Estados getEstado(){
         return estado;
     }
@@ -131,6 +138,12 @@ public class VistaGrafica implements IVista{
     @Override
     public void setEstado(Estados estado) {
         this.estado = estado;
+    }
+
+    @Override
+    public void ranking() throws RemoteException {
+        ranking.setVisible(true);
+        ranking.datosRanking();
     }
 
     public void resetPartidaEnJuego(){

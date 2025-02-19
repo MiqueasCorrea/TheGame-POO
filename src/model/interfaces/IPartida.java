@@ -24,4 +24,5 @@ public interface IPartida {
     boolean jugarTurno(int zonasMano, int zonasCentro);
     void siguienteTurno();
     boolean gameOver();
+    boolean gameWin();
 }

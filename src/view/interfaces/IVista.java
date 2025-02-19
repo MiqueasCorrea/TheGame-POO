@@ -8,7 +8,7 @@ import java.rmi.RemoteException;
 
 public interface IVista {
     void login() throws RemoteException;
-    void menu();
+    void menu() throws RemoteException;
     void opciones();
     void opcionesDeJuego();
     void reglas();
@@ -21,4 +21,6 @@ public interface IVista {
     Controller getControlador();
     void setEstado(Estados estado);
     void mostrarGameOver();
+    void mostrarGameWin() throws RemoteException;
+    void ranking() throws RemoteException;
 }

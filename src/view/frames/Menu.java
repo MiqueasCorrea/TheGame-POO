@@ -6,6 +6,8 @@ package view.frames;
 
 import view.vistas.VistaGrafica;
 
+import java.rmi.RemoteException;
+
 /**
  *
  * @author miqueas
@@ -37,6 +39,7 @@ public class Menu extends javax.swing.JFrame {
 
         vMenu = new javax.swing.JPanel();
         botonJugar = new javax.swing.JButton();
+        botonRanking = new javax.swing.JButton();
         botonReglas = new javax.swing.JButton();
         labelBackgroundMenu = new javax.swing.JLabel();
 
@@ -64,7 +67,33 @@ public class Menu extends javax.swing.JFrame {
                 botonJugarActionPerformed(evt);
             }
         });
-        vMenu.add(botonJugar, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 130, 150, 60));
+        vMenu.add(botonJugar, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 130, 150, 60));
+
+        botonRanking.setBackground(new java.awt.Color(255, 255, 255));
+        botonRanking.setFont(new java.awt.Font("RETROTECH", 0, 48)); // NOI18N
+        botonRanking.setForeground(new java.awt.Color(255, 255, 255));
+        botonRanking.setText("Ranking");
+        botonRanking.setBorder(null);
+        botonRanking.setContentAreaFilled(false);
+        botonRanking.setFocusPainted(false);
+        botonRanking.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                botonRankingMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                botonRankingMouseExited(evt);
+            }
+        });
+        botonRanking.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+                    botonRankingActionPerformed(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        vMenu.add(botonRanking, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 230, 200, 60));
 
         botonReglas.setBackground(new java.awt.Color(255, 255, 255));
         botonReglas.setFont(new java.awt.Font("RETROTECH", 0, 48)); // NOI18N
@@ -86,7 +115,7 @@ public class Menu extends javax.swing.JFrame {
                 botonReglasActionPerformed(evt);
             }
         });
-        vMenu.add(botonReglas, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 230, 160, 60));
+        vMenu.add(botonReglas, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 330, 160, 60));
 
         labelBackgroundMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/menu/menuGIf.gif"))); // NOI18N
         vMenu.add(labelBackgroundMenu, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 960, 530));
@@ -122,6 +151,21 @@ public class Menu extends javax.swing.JFrame {
         setVisible(false);
         vistaGrafica.reglas();
     }//GEN-LAST:event_botonReglasActionPerformed
+
+    private void botonRankingMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonRankingMouseEntered
+        botonRanking.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+    }//GEN-LAST:event_botonRankingMouseEntered
+
+    private void botonRankingMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonRankingMouseExited
+        // TODO add your handling code here:
+        botonRanking.setBorder(null);
+    }//GEN-LAST:event_botonRankingMouseExited
+
+    private void botonRankingActionPerformed(java.awt.event.ActionEvent evt) throws RemoteException {//GEN-FIRST:event_botonRankingActionPerformed
+        // TODO add your handling code here:
+        setVisible(false);
+        vistaGrafica.ranking();
+    }//GEN-LAST:event_botonRankingActionPerformed
 
     /**
      * @param args the command line arguments
@@ -160,6 +204,7 @@ public class Menu extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botonJugar;
+    private javax.swing.JButton botonRanking;
     private javax.swing.JButton botonReglas;
     private javax.swing.JLabel labelBackgroundMenu;
     private javax.swing.JPanel vMenu;

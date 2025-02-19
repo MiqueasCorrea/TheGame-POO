@@ -295,7 +295,9 @@ public class PartidaEnJuego extends javax.swing.JFrame {
     private void mazoActionPerformed(java.awt.event.ActionEvent evt) throws RemoteException {//GEN-FIRST:event_mazoActionPerformed
         // TODO add your handling code here:
         getController().siguienteTurno();
-        getController().verificarGameOver();
+        if (!getController().verificarGameOver()){
+            getController().verificarGameWin();
+        }
     }//GEN-LAST:event_mazoActionPerformed
 
     private void VolverMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_VolverMouseEntered
@@ -428,6 +430,17 @@ public class PartidaEnJuego extends javax.swing.JFrame {
         labelgameOver.setVisible(true);
         Volver.setVisible(true);
     }
+
+    public void mostrarGameWin() throws RemoteException {
+        System.out.println("GANARON LOS JUGADORES");
+        draggable.setAction(false);
+        draggable2.setAction(false);
+        mazo.setVisible(false);
+        this.getContentPane().setComponentZOrder(Volver, 0);
+        Volver.setVisible(true);
+        vistaGrafica.getControlador().actualizarRanking(vistaGrafica.getControlador().getNombreJugador());
+    }
+
     /**
      * @param args the command line arguments
      */

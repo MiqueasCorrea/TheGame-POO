@@ -17,11 +17,14 @@ import java.util.Map;
 
 public class Modelo extends ObservableRemoto implements IModelo, Serializable {
     private List<IJugador> usuarios;
-    private final Map<Integer, IPartida> partidas;
+    private Map<Integer, IPartida> partidas;
+    private IRanking ranking;
+
 
     public Modelo(){
         usuarios = new ArrayList<>();
         partidas = new HashMap<>();
+        ranking = new Ranking();
     }
 
     // GESTION PARTIDAS
@@ -100,12 +103,25 @@ public class Modelo extends ObservableRemoto implements IModelo, Serializable {
     }
 
     @Override
-    public void gameOver(int id_partida) throws RemoteException{
+    public boolean gameOver(int id_partida) throws RemoteException{
         IPartida partida = getPartida(id_partida);
         if (partida.gameOver()){
             notificarObservadores(new ManejadorEventos(id_partida, Eventos.GAME_OVER));
             partidas.remove(id_partida);
+            return true;
         }
+        return false;
+    }
+
+    @Override
+    public boolean gameWin(int id_partida) throws RemoteException{
+        IPartida partida = getPartida(id_partida);
+        if (partida.gameWin()){
+            notificarObservadores(new ManejadorEventos(id_partida, Eventos.GAME_WIN));
+            partidas.remove(id_partida);
+            return true;
+        }
+        return false;
     }
 
     // GESTION USUARIOS-OBSERVADORES
@@ -119,6 +135,16 @@ public class Modelo extends ObservableRemoto implements IModelo, Serializable {
     @Override
     public List<IJugador> getUsuarios() throws RemoteException{
         return usuarios;
+    }
+
+    @Override
+    public void actualizarRanking(String nombre) throws RemoteException{
+        ranking.actualizar(nombre);
+    }
+
+    @Override
+    public Map<String, Integer> getRanking() throws RemoteException{
+        return ranking.getRanking();
     }
 
 }

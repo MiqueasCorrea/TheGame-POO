@@ -12,6 +12,7 @@ import view.interfaces.IVista;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Map;
 
 public class Controller implements IControladorRemoto {
     private IModelo modelo;
@@ -88,8 +89,12 @@ public class Controller implements IControladorRemoto {
         modelo.siguienteTurno(id_partida_actual);
     }
 
-    public void verificarGameOver() throws RemoteException {
-        modelo.gameOver(id_partida_actual);
+    public boolean verificarGameOver() throws RemoteException {
+        return modelo.gameOver(id_partida_actual);
+    }
+
+    public boolean verificarGameWin() throws RemoteException {
+        return modelo.gameWin(id_partida_actual);
     }
 
     // GESTION USUARIOS-OBSERVADORES
@@ -107,6 +112,14 @@ public class Controller implements IControladorRemoto {
 
     public int getIdJugador(){
         return jugador.getId();
+    }
+
+    public void actualizarRanking(String nombre) throws RemoteException {
+        modelo.actualizarRanking(nombre);
+    }
+
+    public Map<String, Integer> getRanking() throws RemoteException {
+        return modelo.getRanking();
     }
 
     @Override
@@ -135,6 +148,12 @@ public class Controller implements IControladorRemoto {
                     if (id_partida_actual != evento.getId()){return;}
                     if (vista.getEstado() == Estados.EN_JUEGO) {
                         vista.mostrarGameOver();
+                    }
+                }
+                case GAME_WIN -> {
+                    if (id_partida_actual != evento.getId()){return;}
+                    if (vista.getEstado() == Estados.EN_JUEGO) {
+                        vista.mostrarGameWin();
                     }
                 }
                 default -> {}

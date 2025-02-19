@@ -40,6 +40,7 @@ public class Login extends javax.swing.JFrame {
         vLogin = new javax.swing.JPanel();
         jLabelUsuarioLogin = new javax.swing.JLabel();
         jTextFieldLogin = new javax.swing.JTextField();
+        jBotonRegistrarse = new javax.swing.JButton();
         jBotonLogin = new javax.swing.JButton();
         tituloLabel = new javax.swing.JLabel();
         autorLabel = new javax.swing.JLabel();
@@ -66,6 +67,18 @@ public class Login extends javax.swing.JFrame {
         });
         vLogin.add(jTextFieldLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 380, 170, 30));
 
+        jBotonRegistrarse.setBackground(new java.awt.Color(47, 28, 7));
+        jBotonRegistrarse.setFont(new java.awt.Font("RETROTECH", 0, 18)); // NOI18N
+        jBotonRegistrarse.setForeground(new java.awt.Color(255, 255, 255));
+        jBotonRegistrarse.setText("Registrarse");
+        jBotonRegistrarse.setDefaultCapable(false);
+        jBotonRegistrarse.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBotonRegistrarseActionPerformed(evt);
+            }
+        });
+        vLogin.add(jBotonRegistrarse, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 440, 160, 30));
+
         jBotonLogin.setBackground(new java.awt.Color(47, 28, 7));
         jBotonLogin.setFont(new java.awt.Font("RETROTECH", 0, 18)); // NOI18N
         jBotonLogin.setForeground(new java.awt.Color(255, 255, 255));
@@ -80,7 +93,7 @@ public class Login extends javax.swing.JFrame {
                 }
             }
         });
-        vLogin.add(jBotonLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 440, 160, 30));
+        vLogin.add(jBotonLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 440, 160, 30));
 
         tituloLabel.setFont(new java.awt.Font("RETROTECH", 2, 36)); // NOI18N
         tituloLabel.setForeground(new java.awt.Color(255, 255, 255));
@@ -113,6 +126,10 @@ public class Login extends javax.swing.JFrame {
             jTextFieldLogin.requestFocus();
         }
     }//GEN-LAST:event_jBotonLoginActionPerformed
+
+    private void jBotonRegistrarseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonRegistrarseActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jBotonRegistrarseActionPerformed
 
     /**
      * @param args the command line arguments
@@ -153,6 +170,7 @@ public class Login extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel autorLabel;
     private javax.swing.JButton jBotonLogin;
+    private javax.swing.JButton jBotonRegistrarse;
     private javax.swing.JLabel jLabelUsuarioLogin;
     private javax.swing.JTextField jTextFieldLogin;
     private javax.swing.JLabel labelBackground;
