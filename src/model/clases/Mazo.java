@@ -19,7 +19,7 @@ public class Mazo implements IMazo, Serializable {
      * Luego se mezclan con Collections.shuffle para darle orden aleatorio al mazo.
      */
     public Mazo(){
-        cantidadCartas = 5;
+        cantidadCartas = 48;
         cartas = new ArrayList<>();
         for (EnumColor color : EnumColor.values()){
             if (color != EnumColor.PURPURA){

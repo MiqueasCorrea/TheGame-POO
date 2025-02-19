@@ -52,6 +52,7 @@ public class AppCliente {
 //                null,
 //                8888
 //        );
+//        IVista vista = new VistaGrafica();
         IVista vista = new VistaConsola();
         Cliente c = new Cliente(ip, Integer.parseInt(port), ipServidor, Integer.parseInt(portServidor));
         vista.login();
