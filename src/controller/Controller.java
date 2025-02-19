@@ -7,10 +7,7 @@ import model.clases.Jugador;
 import model.clases.Partida;
 import model.enums.Estados;
 import model.enums.Eventos;
-import model.interfaces.ICarta;
-import model.interfaces.IJugador;
-import model.interfaces.IModelo;
-import model.interfaces.IPartida;
+import model.interfaces.*;
 import view.interfaces.IVista;
 
 import java.rmi.RemoteException;
@@ -30,6 +27,10 @@ public class Controller implements IControladorRemoto {
 
     public void setVista(IVista vista) {
         this.vista = vista;
+    }
+
+    public int getId_partida_actual(){
+        return id_partida_actual;
     }
 
     @Override
@@ -79,6 +80,18 @@ public class Controller implements IControladorRemoto {
         modelo.jugarTurno(id_partida_actual, zonasMano, zonasCentro);
     }
 
+    public IMazo getMazo() throws RemoteException{
+        return modelo.getMazo(id_partida_actual);
+    }
+
+    public void siguienteTurno() throws RemoteException {
+        modelo.siguienteTurno(id_partida_actual);
+    }
+
+    public void verificarGameOver() throws RemoteException {
+        modelo.gameOver(id_partida_actual);
+    }
+
     // GESTION USUARIOS-OBSERVADORES
     public void conectarJugador(String nombre) throws RemoteException{
         this.jugador = this.modelo.conectarUsuario(nombre);
@@ -112,10 +125,16 @@ public class Controller implements IControladorRemoto {
                         vista.buscarPartidas();
                     }
                 }
-                case ACTUALIZACION_CARTA -> {
+                case ACTUALIZACION_CARTA, CAMBIO_TURNO -> {
                     if (id_partida_actual != evento.getId()){return;}
                     if (vista.getEstado() == Estados.EN_JUEGO) {
                         vista.mostrarPartida();
+                    }
+                }
+                case GAME_OVER -> {
+                    if (id_partida_actual != evento.getId()){return;}
+                    if (vista.getEstado() == Estados.EN_JUEGO) {
+                        vista.mostrarGameOver();
                     }
                 }
                 default -> {}

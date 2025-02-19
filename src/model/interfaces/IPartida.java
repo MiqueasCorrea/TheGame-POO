@@ -21,5 +21,7 @@ public interface IPartida {
     void repartirCartas();
     IJugador getJugador(int posicion);
     IJugador getTurno();
-    void jugarTurno(int zonasMano, int zonasCentro);
+    boolean jugarTurno(int zonasMano, int zonasCentro);
+    void siguienteTurno();
+    boolean gameOver();
 }

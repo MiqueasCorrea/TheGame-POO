@@ -7,6 +7,7 @@ import model.interfaces.*;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.function.BooleanSupplier;
 
 public class Partida implements IPartida, Serializable {
     private int id;
@@ -129,42 +130,88 @@ public class Partida implements IPartida, Serializable {
     }
 
     @Override
-    public void jugarTurno(int zonasMano, int zonasCentro){
-        Map<Integer, Runnable> accionesMano = Map.of(
+    public boolean jugarTurno(int zonasMano, int zonasCentro) {
+        Map<Integer, BooleanSupplier> accionesMano = Map.of(
                 0, () -> jugarPrimerCarta(zonasCentro),
                 1, () -> jugarSegundaCarta(zonasCentro)
         );
 
-        Runnable accion = accionesMano.get(zonasMano);
+        BooleanSupplier accion = accionesMano.get(zonasMano);
         if (accion != null) {
-            accion.run();
+            return accion.getAsBoolean();
         } else {
-            throw new IllegalArgumentException("Zona de carta no valida.");
-        }
-
-    }
-
-    public void jugarPrimerCarta(int zonasCentro){
-        if (zonasCentro == 0){
-            setCartaAlta(getTurno().getPrimeraCartaDelJugador());
-            getTurno().setPrimeraCarta_en_mano(false);
-        } else if (zonasCentro == 1) {
-            setCartaBaja(getTurno().getPrimeraCartaDelJugador());
-            getTurno().setPrimeraCarta_en_mano(false);
-        } else{
-            throw new IllegalArgumentException("Zona donde tirar la carta invalida");
+            throw new IllegalArgumentException("Zona de carta no válida.");
         }
     }
 
-    public void jugarSegundaCarta(int zonasCentro){
-        if (zonasCentro == 0){
-            setCartaAlta(getTurno().getSegundaCartaDelJugador());
-            getTurno().setSegundaCarta_en_mano(false);
+    public boolean jugarPrimerCarta(int zonasCentro) {
+        if (zonasCentro == 0) {
+            if (verificarMovimiento(getTurno().getPrimeraCartaDelJugador(), cartaAlta)){
+                setCartaAlta(getTurno().getPrimeraCartaDelJugador());
+                getTurno().setPrimeraCarta_en_mano(false);
+                getTurno().incrementarCartasTiradas();
+                return true;
+            }
+            return false;
         } else if (zonasCentro == 1) {
-            setCartaBaja(getTurno().getSegundaCartaDelJugador());
-            getTurno().setSegundaCarta_en_mano(false);
-        } else{
-            throw new IllegalArgumentException("Zona donde tirar la carta invalida");
+            if (verificarMovimiento(getTurno().getPrimeraCartaDelJugador(), cartaBaja)){
+                setCartaBaja(getTurno().getPrimeraCartaDelJugador());
+                getTurno().setPrimeraCarta_en_mano(false);
+                getTurno().incrementarCartasTiradas();
+                return true;
+            }
+            return false;
         }
+        throw new IllegalArgumentException("Zona donde tirar la carta inválida");
+    }
+
+    public boolean jugarSegundaCarta(int zonasCentro) {
+        if (zonasCentro == 0) {
+            if (verificarMovimiento(getTurno().getSegundaCartaDelJugador(), cartaAlta)){
+                setCartaAlta(getTurno().getSegundaCartaDelJugador());
+                getTurno().setSegundaCarta_en_mano(false);
+                getTurno().incrementarCartasTiradas();
+                return true;
+            }
+            return false;
+        } else if (zonasCentro == 1) {
+            if (verificarMovimiento(getTurno().getSegundaCartaDelJugador(), cartaBaja)){
+                setCartaBaja(getTurno().getSegundaCartaDelJugador());
+                getTurno().setSegundaCarta_en_mano(false);
+                getTurno().incrementarCartasTiradas();
+                return true;
+            }
+            return false;
+        }
+        throw new IllegalArgumentException("Zona donde tirar la carta inválida");
+    }
+
+    public boolean verificarMovimiento(ICarta carta_a_tirar, ICarta zonaCarta){
+        if ((carta_a_tirar.getNumero() <= cartaAlta.getNumero())
+            &&
+            (carta_a_tirar.getNumero() >= cartaBaja.getNumero())
+            ||
+            (carta_a_tirar.getColor() == zonaCarta.getColor())
+            ){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void siguienteTurno(){
+        turnos.avanzarTurno();
+    }
+
+    @Override
+    public boolean gameOver(){
+        IJugador jugador = getTurno();
+        return !verificarMovimiento(jugador.getPrimeraCartaDelJugador(), cartaAlta)
+                &&
+                !verificarMovimiento(jugador.getPrimeraCartaDelJugador(), cartaBaja)
+                &&
+                !verificarMovimiento(jugador.getSegundaCartaDelJugador(), cartaAlta)
+                &&
+                !verificarMovimiento(jugador.getSegundaCartaDelJugador(), cartaBaja);
     }
 }

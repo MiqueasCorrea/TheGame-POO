@@ -79,4 +79,14 @@ public class Jugador implements IJugador, Serializable{
     public void setSegundaCarta_en_mano(boolean carta2_en_mano) {
         this.carta2_en_mano = carta2_en_mano;
     }
+
+    @Override
+    public void incrementarCartasTiradas() {
+        cantidadCartasTiradas++;
+    }
+
+    @Override
+    public void setCantidadCartasTiradas(int cantidad) {
+        this.cantidadCartasTiradas = cantidad;
+    }
 }

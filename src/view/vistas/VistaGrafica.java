@@ -59,6 +59,7 @@ public class VistaGrafica implements IVista{
 
     @Override
     public void menu(){
+
         menu.setVisible(true);
     }
 
@@ -92,6 +93,7 @@ public class VistaGrafica implements IVista{
 
     @Override
     public void esperandoJugadores() throws RemoteException{
+        System.out.println(partida_en_juego + ": TEST");
         partida_en_juego.setVisible(true);
         partida_en_juego.mostrarJugadoresEnMesa();
     };
@@ -108,6 +110,12 @@ public class VistaGrafica implements IVista{
         partida_en_juego.mostrarCartas();
         partida_en_juego.mostrarTurno();
         partida_en_juego.mostrarTablero();
+        partida_en_juego.mostrarCartasRestantes();
+    }
+
+    @Override
+    public void mostrarGameOver(){
+        partida_en_juego.mostrarGameOver();
     }
 
     @Override
@@ -123,5 +131,11 @@ public class VistaGrafica implements IVista{
     @Override
     public void setEstado(Estados estado) {
         this.estado = estado;
+    }
+
+    public void resetPartidaEnJuego(){
+        this.partida_en_juego = new PartidaEnJuego();
+        getControlador().setId_partida_actual(-1);
+        partida_en_juego.setVistaGrafica(this);
     }
 }

@@ -22,8 +22,11 @@ public interface IModelo extends IObservableRemoto {
 
     void jugarTurno(int id_partida_actual, int zonasMano, int zonasCentro) throws RemoteException;
 
+    IMazo getMazo(int id_partida) throws RemoteException;
     // GESTION USUARIOS-OBSERVADORES
     IJugador conectarUsuario(String nombre) throws RemoteException;
 
     List<IJugador> getUsuarios() throws RemoteException;
+    void siguienteTurno(int id_partida) throws RemoteException;
+    void gameOver(int id_partida) throws RemoteException;
 }

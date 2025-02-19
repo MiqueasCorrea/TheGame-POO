@@ -20,4 +20,5 @@ public interface IVista {
     Estados getEstado();
     Controller getControlador();
     void setEstado(Estados estado);
+    void mostrarGameOver();
 }

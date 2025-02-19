@@ -10,6 +10,7 @@ import model.clases.Jugador;
 import model.enums.EnumColor;
 import model.interfaces.ICarta;
 import model.interfaces.IJugador;
+import model.interfaces.IMazo;
 import model.interfaces.IPartida;
 import view.vistas.VistaGrafica;
 
@@ -26,6 +27,8 @@ import javax.swing.*;
 public class PartidaEnJuego extends javax.swing.JFrame {
     private List<JPanel> centerZone = new ArrayList<>();
     private List<JPanel> handZone = new ArrayList<>();
+    private Draggable draggable;
+    private Draggable draggable2;
 
     /**
      * Creates new form BuscarPartida
@@ -87,7 +90,10 @@ public class PartidaEnJuego extends javax.swing.JFrame {
 
         vPartidaEnJuego = new javax.swing.JPanel();
         mazo = new javax.swing.JButton();
+        Volver = new javax.swing.JButton();
+        labelgameOver = new javax.swing.JLabel();
         labelEstadoPartida = new javax.swing.JLabel();
+        labelCartasRestantes = new javax.swing.JLabel();
         nombreJugador2 = new javax.swing.JLabel();
         nombreJugador3 = new javax.swing.JLabel();
         nombreJugador4 = new javax.swing.JLabel();
@@ -112,16 +118,54 @@ public class PartidaEnJuego extends javax.swing.JFrame {
         mazo.setContentAreaFilled(false);
         mazo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mazoActionPerformed(evt);
+                try {
+                    mazoActionPerformed(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         vPartidaEnJuego.add(mazo, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 300, 60, 90));
+
+        Volver.setBackground(new java.awt.Color(255, 255, 255));
+        Volver.setFont(new java.awt.Font("RETROTECH", 0, 36)); // NOI18N
+        Volver.setForeground(new java.awt.Color(255, 255, 255));
+        Volver.setText("Volver");
+        Volver.setBorder(null);
+        Volver.setContentAreaFilled(false);
+        Volver.setFocusPainted(false);
+        Volver.setVisible(false);
+        Volver.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                VolverMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                VolverMouseExited(evt);
+            }
+        });
+        Volver.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                VolverActionPerformed(evt);
+            }
+        });
+        vPartidaEnJuego.add(Volver, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 570, 120, 40));
+
+        labelgameOver.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/menu/creador_partida/gameOver.png"))); // NOI18N
+        labelgameOver.setVisible(false);
+        vPartidaEnJuego.add(labelgameOver, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 40, -1, -1));
 
         labelEstadoPartida.setFont(new java.awt.Font("RETROTECH", 0, 36)); // NOI18N
         labelEstadoPartida.setForeground(new java.awt.Color(255, 255, 255));
         labelEstadoPartida.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelEstadoPartida.setText("Esperando jugadores...");
         vPartidaEnJuego.add(labelEstadoPartida, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 20, 580, -1));
+
+        labelCartasRestantes.setFont(new java.awt.Font("RETROTECH", 0, 21)); // NOI18N
+        labelCartasRestantes.setForeground(new java.awt.Color(255, 255, 255));
+        labelCartasRestantes.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        labelCartasRestantes.setText("CARTAS RESTANTES: ");
+        labelCartasRestantes.setVisible(false);
+        vPartidaEnJuego.add(labelCartasRestantes, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 290, 30));
 
         nombreJugador2.setFont(new java.awt.Font("RETROTECH", 0, 24)); // NOI18N
         nombreJugador2.setForeground(new java.awt.Color(255, 255, 255));
@@ -248,10 +292,25 @@ public class PartidaEnJuego extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void mazoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mazoActionPerformed
+    private void mazoActionPerformed(java.awt.event.ActionEvent evt) throws RemoteException {//GEN-FIRST:event_mazoActionPerformed
         // TODO add your handling code here:
-        System.out.println("TOCO EL MAZO");
+        getController().siguienteTurno();
+        getController().verificarGameOver();
     }//GEN-LAST:event_mazoActionPerformed
+
+    private void VolverMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_VolverMouseEntered
+        Volver.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+    }//GEN-LAST:event_VolverMouseEntered
+
+    private void VolverMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_VolverMouseExited
+        Volver.setBorder(null);
+    }//GEN-LAST:event_VolverMouseExited
+
+    private void VolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VolverActionPerformed
+        setVisible(false);
+        vistaGrafica.resetPartidaEnJuego();
+        vistaGrafica.opciones();
+    }//GEN-LAST:event_VolverActionPerformed
 
     public void mostrarJugadoresEnMesa() throws RemoteException {
         IPartida partida = vistaGrafica.getControlador().getPartidaActual();
@@ -290,6 +349,7 @@ public class PartidaEnJuego extends javax.swing.JFrame {
 
     public void verificarIniciarPartida(IPartida partida) throws RemoteException {
         if (partida.getCantidadJugadoresTotales() == partida.getCantidadJugadoresEnLaPartida()){
+            labelCartasRestantes.setVisible(true);
             vistaGrafica.empezarPartida();
         }
     }
@@ -326,10 +386,11 @@ public class PartidaEnJuego extends javax.swing.JFrame {
         IJugador turno_jugador = getController().getTurno();
         labelEstadoPartida.setText("Turno de " + turno_jugador.getNombre());
         if (turno_jugador.getId() == getController().getIdJugador()){
-            System.out.println("TURNO DE " + turno_jugador.getNombre());
+            mazo.setVisible(true);
             draggable.setAction(true);
             draggable2.setAction(true);
         } else{
+            mazo.setVisible(false);
             draggable.setAction(false);
             draggable2.setAction(false);
         }
@@ -350,6 +411,22 @@ public class PartidaEnJuego extends javax.swing.JFrame {
         System.out.println("-------------------");
         System.out.println("CARTA ALTA: " + "[" + cartaAlta.getColor().name() + " " + cartaAlta.getNumero() + "]");
         System.out.println("CARTA BAJA: " + "[" + cartaBaja.getColor().name() + " " + cartaBaja.getNumero() + "]");
+    }
+
+    public void mostrarCartasRestantes() throws RemoteException{
+        IMazo mazo = getController().getPartidaActual().getMazo();
+        labelCartasRestantes.setText("CARTAS RESTANTES: " + mazo.getCantidadCartas());
+    }
+
+    public void mostrarGameOver(){
+        System.out.println("GAME OVER");
+        draggable.setAction(false);
+        draggable2.setAction(false);
+        mazo.setVisible(false);
+        this.getContentPane().setComponentZOrder(labelgameOver, 0);
+        this.getContentPane().setComponentZOrder(Volver, 0);
+        labelgameOver.setVisible(true);
+        Volver.setVisible(true);
     }
     /**
      * @param args the command line arguments
@@ -388,16 +465,17 @@ public class PartidaEnJuego extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Volver;
     private javax.swing.JLabel carta1;
     private javax.swing.JLabel carta2;
     private javax.swing.JLabel dedo;
     private javax.swing.JLabel labelBackgroundMenu1;
     private javax.swing.JLabel labelCartaAlta;
     private javax.swing.JLabel labelCartaBaja;
+    private javax.swing.JLabel labelCartasRestantes;
     private javax.swing.JLabel labelEstadoPartida;
+    private javax.swing.JLabel labelgameOver;
     private javax.swing.JButton mazo;
-    private Draggable draggable;
-    private Draggable draggable2;
     private javax.swing.JLabel nombreJugador2;
     private javax.swing.JLabel nombreJugador3;
     private javax.swing.JLabel nombreJugador4;

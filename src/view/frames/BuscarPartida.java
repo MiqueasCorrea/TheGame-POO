@@ -5,6 +5,7 @@
 package view.frames;
 
 import model.clases.Partida;
+import model.enums.EstadoPartida;
 import model.enums.Estados;
 import model.interfaces.IPartida;
 import view.vistas.VistaGrafica;
@@ -144,7 +145,7 @@ public class BuscarPartida extends javax.swing.JFrame {
             button.setBorder(null);
             button.setContentAreaFilled(false);
             button.setFocusPainted(false);
-            button.setText("Partida " + i + ", Jugadores: " + partida.getCantidadJugadoresEnLaPartida() + " de " + partida.getCantidadJugadoresTotales());
+            button.setText("Partida " + i + ", Jugadores: " + partida.getCantidadJugadoresEnLaPartida() + " de " + partida.getCantidadJugadoresTotales() + " - " + partida.getEstado().name());
             button.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseEntered(java.awt.event.MouseEvent evt) {
                     button.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -155,11 +156,14 @@ public class BuscarPartida extends javax.swing.JFrame {
             });
             button.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    setVisible(false);
-                    try {
-                        vistaGrafica.getControlador().agregarJugadorAPartida(partida.getId());
-                    } catch (RemoteException e) {
-                        throw new RuntimeException(e);
+                    if (partida.getEstado() == EstadoPartida.EN_ESPERA){
+                        setVisible(false);
+                        vistaGrafica.setEstado(Estados.EN_JUEGO);
+                        try {
+                            vistaGrafica.getControlador().agregarJugadorAPartida(partida.getId());
+                        } catch (RemoteException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
             });

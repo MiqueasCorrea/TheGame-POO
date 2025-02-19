@@ -5,10 +5,7 @@ import controller.interfaces.IObserver;
 import model.enums.EstadoPartida;
 import model.enums.Eventos;
 import model.extras.GeneradorUsuarioID;
-import model.interfaces.ICarta;
-import model.interfaces.IJugador;
-import model.interfaces.IModelo;
-import model.interfaces.IPartida;
+import model.interfaces.*;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
@@ -48,6 +45,11 @@ public class Modelo extends ObservableRemoto implements IModelo, Serializable {
     }
 
     @Override
+    public IMazo getMazo(int id_partida) throws RemoteException{
+        return getPartida(id_partida).getMazo();
+    }
+
+    @Override
     public void agregarJugadorAPartida(int id_partida, IJugador jugador) throws RemoteException{
         IPartida partida = partidas.get(id_partida);
         partida.agregarJugador(jugador);
@@ -72,8 +74,38 @@ public class Modelo extends ObservableRemoto implements IModelo, Serializable {
 
     @Override
     public void jugarTurno(int id_partida, int zonasMano, int zonasCentro) throws RemoteException {
-        getPartida(id_partida).jugarTurno(zonasMano, zonasCentro);
-        notificarObservadores(new ManejadorEventos(id_partida, Eventos.ACTUALIZACION_CARTA));
+        if (getPartida(id_partida).jugarTurno(zonasMano, zonasCentro)){
+            notificarObservadores(new ManejadorEventos(id_partida, Eventos.ACTUALIZACION_CARTA));
+        }
+    }
+
+    @Override
+    public void siguienteTurno(int id_partida) throws RemoteException {
+        IPartida partida = getPartida(id_partida);
+        if (partida.getTurno().getCantidadCartasTiradas() > 0){
+            if (!partida.getTurno().isPrimeraCarta_en_mano()){
+                ICarta carta1 = partida.getMazo().agarrarCartaTope();
+                partida.getTurno().setPrimeraCartaDelJugador(carta1);
+                partida.getTurno().setPrimeraCarta_en_mano(true);
+            }
+            if (!partida.getTurno().isSegundaCarta_en_mano()){
+                ICarta carta2 = partida.getMazo().agarrarCartaTope();
+                partida.getTurno().setSegundaCartaDelJugador(carta2);
+                partida.getTurno().setSegundaCarta_en_mano(true);
+            }
+            partida.getTurno().setCantidadCartasTiradas(0);
+            getPartida(id_partida).siguienteTurno();
+            notificarObservadores(new ManejadorEventos(id_partida, Eventos.CAMBIO_TURNO));
+        }
+    }
+
+    @Override
+    public void gameOver(int id_partida) throws RemoteException{
+        IPartida partida = getPartida(id_partida);
+        if (partida.gameOver()){
+            notificarObservadores(new ManejadorEventos(id_partida, Eventos.GAME_OVER));
+            partidas.remove(id_partida);
+        }
     }
 
     // GESTION USUARIOS-OBSERVADORES

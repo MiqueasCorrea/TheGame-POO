@@ -35,6 +35,7 @@ public class Mazo implements IMazo, Serializable {
         return cartas;
     }
 
+    @Override
     public int getCantidadCartas(){
         return cantidadCartas;
     }

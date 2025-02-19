@@ -11,4 +11,7 @@ public interface IJugador {
     boolean isSegundaCarta_en_mano();
     void setPrimeraCarta_en_mano(boolean carta1_en_mano);
     void setSegundaCarta_en_mano(boolean carta2_en_mano);
+    void incrementarCartasTiradas();
+    void setCantidadCartasTiradas(int cantidad);
+    int getCantidadCartasTiradas();
 }
