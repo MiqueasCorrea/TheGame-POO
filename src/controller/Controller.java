@@ -7,6 +7,8 @@ import model.clases.Jugador;
 import model.clases.Partida;
 import model.enums.Estados;
 import model.enums.Eventos;
+import model.excepciones.JugadorExistente;
+import model.excepciones.JugadorNoExistente;
 import model.interfaces.*;
 import view.interfaces.IVista;
 
@@ -16,15 +18,12 @@ import java.util.Map;
 
 public class Controller implements IControladorRemoto {
     private IModelo modelo;
-    private IJugador jugador;
+//    private IJugador jugador;
     private IVista vista;
     private int id_partida_actual;
+    private String nombre_jugador;
 
     public Controller(){}
-
-    public IModelo getModelo(){
-        return this.modelo;
-    }
 
     public void setVista(IVista vista) {
         this.vista = vista;
@@ -52,12 +51,12 @@ public class Controller implements IControladorRemoto {
     public void agregarJugadorAPartida(int id_partida) throws RemoteException{
         vista.setEstado(Estados.EN_ESPERANDO_JUGADORES);
         setId_partida_actual(id_partida);
-        modelo.agregarJugadorAPartida(id_partida, jugador);
+        modelo.agregarJugadorAPartida(id_partida, nombre_jugador);
     }
 
     public void agregarJugadorAPartida() throws RemoteException{
         vista.setEstado(Estados.EN_ESPERANDO_JUGADORES);
-        modelo.agregarJugadorAPartida(id_partida_actual, jugador);
+        modelo.agregarJugadorAPartida(id_partida_actual, nombre_jugador);
     }
 
     public void setId_partida_actual(int id) {
@@ -98,20 +97,20 @@ public class Controller implements IControladorRemoto {
     }
 
     // GESTION USUARIOS-OBSERVADORES
-    public void conectarJugador(String nombre) throws RemoteException{
-        this.jugador = this.modelo.conectarUsuario(nombre);
+    public void registrarUsuario(String nombre, String password) throws RemoteException, JugadorExistente {
+        modelo.registrarUsuario(nombre, password);
+        System.out.println("test a ver si pasa igual");
+        this.nombre_jugador = nombre;
     }
 
-    public IJugador getJugador(){
-        return jugador;
+    public void iniciarSesion(String nombre, String password) throws RemoteException, JugadorNoExistente {
+        modelo.iniciarSesion(nombre, password);
+        System.out.println("test a ver si pasa igual");
+        this.nombre_jugador = nombre;
     }
 
     public String getNombreJugador(){
-        return jugador.getNombre();
-    }
-
-    public int getIdJugador(){
-        return jugador.getId();
+        return nombre_jugador;
     }
 
     public void actualizarRanking(String nombre) throws RemoteException {

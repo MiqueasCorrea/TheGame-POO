@@ -1,7 +1,8 @@
 package model.interfaces;
 
 import ar.edu.unlu.rmimvc.observer.IObservableRemoto;
-import controller.interfaces.IObserver;
+import model.excepciones.JugadorExistente;
+import model.excepciones.JugadorNoExistente;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -15,7 +16,7 @@ public interface IModelo extends IObservableRemoto {
 
     IPartida getPartida(int id) throws RemoteException;
 
-    void agregarJugadorAPartida(int id_partida, IJugador jugador) throws RemoteException;
+    void agregarJugadorAPartida(int id_partida, String jugador) throws RemoteException;
 
     void empezarPartida(int id_partida_actual) throws RemoteException;
 
@@ -24,13 +25,19 @@ public interface IModelo extends IObservableRemoto {
     void jugarTurno(int id_partida_actual, int zonasMano, int zonasCentro) throws RemoteException;
 
     IMazo getMazo(int id_partida) throws RemoteException;
-    // GESTION USUARIOS-OBSERVADORES
-    IJugador conectarUsuario(String nombre) throws RemoteException;
 
-    List<IJugador> getUsuarios() throws RemoteException;
+    // GESTION USUARIOS-OBSERVADORES
     void siguienteTurno(int id_partida) throws RemoteException;
+
     boolean gameOver(int id_partida) throws RemoteException;
+
     boolean gameWin(int id_partida) throws RemoteException;
+
     void actualizarRanking(String nombre) throws RemoteException;
+
     Map<String, Integer> getRanking() throws RemoteException;
+
+    void registrarUsuario(String nombre, String password) throws JugadorExistente, RemoteException;
+
+    void iniciarSesion(String nombre, String password) throws JugadorNoExistente, RemoteException;
 }

@@ -8,7 +8,6 @@ import java.io.Serializable;
 
 public class Jugador implements IJugador, Serializable{
     private static final long serialVersionUID = 1L;
-    private int id;
     private String nombre;
     private ICarta carta1;
     private ICarta carta2;
@@ -18,7 +17,6 @@ public class Jugador implements IJugador, Serializable{
 
     public Jugador(String nombre) {
         this.nombre = nombre;
-        id = new GeneradorUsuarioID().conseguirSiguienteID();
         cantidadCartasTiradas = 0;
         carta1_en_mano = false;
         carta2_en_mano = false;
@@ -37,10 +35,6 @@ public class Jugador implements IJugador, Serializable{
         return carta2;
     }
 
-    public int getId(){
-        return id;
-    }
-
     @Override
     public boolean isPrimeraCarta_en_mano() {
         return carta1_en_mano;
@@ -56,10 +50,6 @@ public class Jugador implements IJugador, Serializable{
     }
 
     // SETTERS
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
     @Override
     public void setPrimeraCartaDelJugador(ICarta carta1){
         this.carta1 = carta1;

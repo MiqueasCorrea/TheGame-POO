@@ -318,7 +318,7 @@ public class PartidaEnJuego extends javax.swing.JFrame {
         IPartida partida = vistaGrafica.getControlador().getPartidaActual();
 
         // Obtener la posición de "mi jugador" en la partida
-        int miPosicion = partida.getPosicionJugador(vistaGrafica.getControlador().getJugador());
+        int miPosicion = partida.getPosicionJugador(vistaGrafica.getControlador().getNombreJugador());
 
         // Obtener el total de jugadores en la partida
         int cantidadJugadores = partida.getCantidadJugadoresEnLaPartida();
@@ -358,7 +358,7 @@ public class PartidaEnJuego extends javax.swing.JFrame {
 
     public void mostrarCartas() throws RemoteException {
         for (IJugador jugador : getController().getPartidaActual().getJugadoresEnLaPartida()) {
-            if (jugador.getId() == getController().getIdJugador()) {
+            if (jugador.getNombre().equals(getController().getNombreJugador())) {
                 System.out.println("-------------------");
                 ICarta carta1Vista = jugador.getPrimeraCartaDelJugador();
                 ICarta carta2Vista = jugador.getSegundaCartaDelJugador();
@@ -387,7 +387,7 @@ public class PartidaEnJuego extends javax.swing.JFrame {
     public void mostrarTurno() throws RemoteException {
         IJugador turno_jugador = getController().getTurno();
         labelEstadoPartida.setText("Turno de " + turno_jugador.getNombre());
-        if (turno_jugador.getId() == getController().getIdJugador()){
+        if (turno_jugador.getNombre().equals(getController().getNombreJugador())){
             mazo.setVisible(true);
             draggable.setAction(true);
             draggable2.setAction(true);

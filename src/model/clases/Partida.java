@@ -77,10 +77,11 @@ public class Partida implements IPartida, Serializable {
         return estado;
     }
 
-    public int getPosicionJugador(IJugador jugador){
+    @Override
+    public int getPosicionJugador(String jugador){
         int i = 0;
         for (IJugador jug : jugadores_en_la_partida){
-            if (jug.getId() == jugador.getId()){
+            if (jug.getNombre().equals(jugador)){
                 return i;
             }
             i++;
@@ -105,8 +106,9 @@ public class Partida implements IPartida, Serializable {
 
     // METODOS
     @Override
-    public void agregarJugador(IJugador jugador){
-        jugadores_en_la_partida.add(jugador);
+    public void agregarJugador(String jugador){
+        IJugador nuevo_jugador = new Jugador(jugador);
+        jugadores_en_la_partida.add(nuevo_jugador);
     }
 
     @Override

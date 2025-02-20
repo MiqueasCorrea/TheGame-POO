@@ -5,8 +5,12 @@
 package view.frames;
 
 
+import model.excepciones.JugadorExistente;
+import model.excepciones.JugadorNoExistente;
+import model.excepciones.PasswordIncorrecta;
 import view.vistas.VistaGrafica;
 
+import javax.swing.*;
 import java.rmi.RemoteException;
 
 /**
@@ -39,7 +43,9 @@ public class Login extends javax.swing.JFrame {
 
         vLogin = new javax.swing.JPanel();
         jLabelUsuarioLogin = new javax.swing.JLabel();
-        jTextFieldLogin = new javax.swing.JTextField();
+        jLabelPasswordLogin = new javax.swing.JLabel();
+        jPasswordField1 = new javax.swing.JPasswordField();
+        jTextFieldUsernameLogin1 = new javax.swing.JTextField();
         jBotonRegistrarse = new javax.swing.JButton();
         jBotonLogin = new javax.swing.JButton();
         tituloLabel = new javax.swing.JLabel();
@@ -53,19 +59,28 @@ public class Login extends javax.swing.JFrame {
         jLabelUsuarioLogin.setBackground(new java.awt.Color(255, 255, 255));
         jLabelUsuarioLogin.setFont(new java.awt.Font("RETROTECH", 0, 36)); // NOI18N
         jLabelUsuarioLogin.setForeground(new java.awt.Color(255, 255, 255));
-        jLabelUsuarioLogin.setText("Usuario:");
-        vLogin.add(jLabelUsuarioLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 370, 150, 50));
+        jLabelUsuarioLogin.setText("Password:");
+        vLogin.add(jLabelUsuarioLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 370, 180, 50));
 
-        jTextFieldLogin.setBackground(new java.awt.Color(47, 28, 7));
-        jTextFieldLogin.setFont(new java.awt.Font("Noto Sans Mono CJK HK", 0, 18)); // NOI18N
-        jTextFieldLogin.setForeground(new java.awt.Color(255, 255, 255));
-        jTextFieldLogin.setRequestFocusEnabled(false);
-        jTextFieldLogin.addActionListener(new java.awt.event.ActionListener() {
+        jLabelPasswordLogin.setBackground(new java.awt.Color(255, 255, 255));
+        jLabelPasswordLogin.setFont(new java.awt.Font("RETROTECH", 0, 36)); // NOI18N
+        jLabelPasswordLogin.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelPasswordLogin.setText("Usuario:");
+        vLogin.add(jLabelPasswordLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 320, 150, 50));
+
+        jPasswordField1.setBackground(new java.awt.Color(47, 28, 7));
+        jPasswordField1.setForeground(new java.awt.Color(255, 255, 255));
+        jPasswordField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextFieldLoginActionPerformed(evt);
+                jPasswordField1ActionPerformed(evt);
             }
         });
-        vLogin.add(jTextFieldLogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 380, 170, 30));
+        vLogin.add(jPasswordField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 380, 170, 30));
+
+        jTextFieldUsernameLogin1.setBackground(new java.awt.Color(47, 28, 7));
+        jTextFieldUsernameLogin1.setFont(new java.awt.Font("Noto Sans Mono CJK HK", 0, 18)); // NOI18N
+        jTextFieldUsernameLogin1.setForeground(new java.awt.Color(255, 255, 255));
+        vLogin.add(jTextFieldUsernameLogin1, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 330, 170, 30));
 
         jBotonRegistrarse.setBackground(new java.awt.Color(47, 28, 7));
         jBotonRegistrarse.setFont(new java.awt.Font("RETROTECH", 0, 18)); // NOI18N
@@ -77,7 +92,7 @@ public class Login extends javax.swing.JFrame {
                 jBotonRegistrarseActionPerformed(evt);
             }
         });
-        vLogin.add(jBotonRegistrarse, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 440, 160, 30));
+        vLogin.add(jBotonRegistrarse, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 440, 160, 30));
 
         jBotonLogin.setBackground(new java.awt.Color(47, 28, 7));
         jBotonLogin.setFont(new java.awt.Font("RETROTECH", 0, 18)); // NOI18N
@@ -113,23 +128,49 @@ public class Login extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextFieldLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldLoginActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldLoginActionPerformed
-
     private void jBotonLoginActionPerformed(java.awt.event.ActionEvent evt) throws RemoteException {//GEN-FIRST:event_jBotonLoginActionPerformed
-        if (jTextFieldLogin.getText() != null && !jTextFieldLogin.getText().isEmpty()) {
-            vistaGrafica.getControlador().conectarJugador(jTextFieldLogin.getText());
+        if (verificarCampos()) {
+            try {
+                vistaGrafica.getControlador().iniciarSesion(jTextFieldUsernameLogin1.getText(), jPasswordField1.getText());
+            } catch (JugadorNoExistente | PasswordIncorrecta e){
+                JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             setVisible(false);
             vistaGrafica.menu();
         } else{
-            jTextFieldLogin.requestFocus();
+            jPasswordField1.requestFocus();
         }
     }//GEN-LAST:event_jBotonLoginActionPerformed
 
     private void jBotonRegistrarseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBotonRegistrarseActionPerformed
         // TODO add your handling code here:
+        if (verificarCampos()) {
+            try {
+                vistaGrafica.getControlador().registrarUsuario(jTextFieldUsernameLogin1.getText(), jPasswordField1.getText());
+            } catch (JugadorExistente e){
+                JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+            setVisible(false);
+            vistaGrafica.menu();
+        } else{
+            jPasswordField1.requestFocus();
+        }
     }//GEN-LAST:event_jBotonRegistrarseActionPerformed
+
+    private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jPasswordField1ActionPerformed
+
+    private boolean verificarCampos(){
+        if (!jTextFieldUsernameLogin1.getText().isBlank() && !jPasswordField1.getText().isBlank()){
+            return true;
+        }
+        return false;
+    }
 
     /**
      * @param args the command line arguments
@@ -171,8 +212,10 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JLabel autorLabel;
     private javax.swing.JButton jBotonLogin;
     private javax.swing.JButton jBotonRegistrarse;
+    private javax.swing.JLabel jLabelPasswordLogin;
     private javax.swing.JLabel jLabelUsuarioLogin;
-    private javax.swing.JTextField jTextFieldLogin;
+    private javax.swing.JPasswordField jPasswordField1;
+    private javax.swing.JTextField jTextFieldUsernameLogin1;
     private javax.swing.JLabel labelBackground;
     private javax.swing.JLabel tituloLabel;
     private javax.swing.JPanel vLogin;

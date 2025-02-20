@@ -3,10 +3,9 @@ package view.vistas;
 import controller.Controller;
 import model.enums.EstadoPartida;
 import model.enums.Estados;
-import model.enums.Eventos;
-import model.clases.Jugador;
-import model.clases.Partida;
-import model.clases.Carta;
+import model.excepciones.JugadorExistente;
+import model.excepciones.JugadorNoExistente;
+import model.excepciones.PasswordIncorrecta;
 import model.interfaces.ICarta;
 import model.interfaces.IJugador;
 import model.interfaces.IMazo;
@@ -48,14 +47,97 @@ public class VistaConsola extends JFrame implements IVista {
     @Override
     public void login() throws RemoteException{
         eliminarActionListeners();
+        textArea.setText("The Game - Quick & Easy\n\n1. Iniciar Sesion\n2. Registrarse");
         enviar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!textField.getText().equals("")){
+                String opcionElegida = textField.getText();
+                switch (opcionElegida){
+                    case "1" -> iniciarSesion(false, "");
+                    case "2" -> registrarse(false, "");
+                    default -> {}
+                }
+            }
+        });
+    }
+
+    public void iniciarSesion(boolean fallo, String mensaje){
+        limpiarTextoTextField();
+        eliminarActionListeners();
+
+        textArea.setText("The Game - Quick & Easy");
+        if (fallo){
+            textArea.append("\n" + mensaje);
+        }
+        textArea.append("\n\nIngrese nombre de usuario");
+        enviar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!textField.getText().isBlank()){
+                    pedirPasswordLogin(textField.getText());
+                }
+            }
+        });
+    }
+
+    public void registrarse(boolean fallo, String mensaje){
+        limpiarTextoTextField();
+        eliminarActionListeners();
+
+        textArea.setText("The Game - Quick & Easy");
+        if (fallo){
+            textArea.append("\n" + mensaje);
+        }
+
+        textArea.append("\n\nIngrese nombre de usuario a registrar");
+        enviar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!textField.getText().isBlank()){
+                    pedirPasswordRegistro(textField.getText());
+                }
+            }
+        });
+    }
+
+    public void pedirPasswordLogin(String nombre){
+        limpiarTextoTextField();
+        eliminarActionListeners();
+        textArea.append("\nIngrese el password");
+        enviar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!textField.getText().isBlank()){
                     try {
-                        controlador.conectarJugador(textField.getText());
-                    } catch (RemoteException ex) {
-                        throw new RuntimeException(ex);
+                        controlador.iniciarSesion(nombre, textField.getText());
+                    } catch (JugadorNoExistente | PasswordIncorrecta a){
+                        textArea.append("\n\n" + a.getMessage());
+                        iniciarSesion(true, a.getMessage());
+                        return;
+                    } catch (RemoteException b) {
+                        throw new RuntimeException(b);
+                    }
+                    menu();
+                }
+            }
+        });
+    }
+
+    public void pedirPasswordRegistro(String nombre){
+        limpiarTextoTextField();
+        eliminarActionListeners();
+        textArea.append("\nIngrese el password");
+        enviar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!textField.getText().isBlank()){
+                    try {
+                        controlador.registrarUsuario(nombre, textField.getText());
+                    } catch (JugadorExistente a){
+                        registrarse(true, a.getMessage());
+                        return;
+                    } catch (RemoteException b) {
+                        throw new RuntimeException(b);
                     }
                     menu();
                 }
@@ -284,7 +366,7 @@ public class VistaConsola extends JFrame implements IVista {
     private void mostrarCartas() throws RemoteException {
         textArea.append("\n\nTus cartas\n");
         for (IJugador jugador : controlador.getPartidaActual().getJugadoresEnLaPartida()) {
-            if (jugador.getId() == controlador.getIdJugador()) {
+            if (jugador.getNombre().equals(controlador.getNombreJugador())) {
                 System.out.println("-------------------");
                 ICarta carta1Vista = jugador.getPrimeraCartaDelJugador();
                 ICarta carta2Vista = jugador.getSegundaCartaDelJugador();
@@ -313,7 +395,7 @@ public class VistaConsola extends JFrame implements IVista {
     private void mostrarTurno() throws RemoteException {
         IJugador turno_jugador = controlador.getTurno();
         textArea.setText("\t\tTurno de " + turno_jugador.getNombre());
-        if (turno_jugador.getId() == controlador.getIdJugador()){
+        if (turno_jugador.getNombre().equals(controlador.getNombreJugador())){
             textField.setEditable(true);
             action = true;
         } else{

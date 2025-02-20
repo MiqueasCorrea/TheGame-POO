@@ -1,28 +1,26 @@
 package model.clases;
 
 import ar.edu.unlu.rmimvc.observer.ObservableRemoto;
-import controller.interfaces.IObserver;
 import model.enums.EstadoPartida;
 import model.enums.Eventos;
-import model.extras.GeneradorUsuarioID;
+import model.excepciones.JugadorExistente;
+import model.excepciones.JugadorNoExistente;
 import model.interfaces.*;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Modelo extends ObservableRemoto implements IModelo, Serializable {
-    private List<IJugador> usuarios;
+    private ISesion usuarios;
     private Map<Integer, IPartida> partidas;
     private IRanking ranking;
 
-
     public Modelo(){
-        usuarios = new ArrayList<>();
+        usuarios = new Sesion();
         partidas = new HashMap<>();
         ranking = new Ranking();
     }
@@ -53,7 +51,7 @@ public class Modelo extends ObservableRemoto implements IModelo, Serializable {
     }
 
     @Override
-    public void agregarJugadorAPartida(int id_partida, IJugador jugador) throws RemoteException{
+    public void agregarJugadorAPartida(int id_partida, String jugador) throws RemoteException{
         IPartida partida = partidas.get(id_partida);
         partida.agregarJugador(jugador);
         notificarObservadores(new ManejadorEventos(partida.getId(), Eventos.CAMBIO_ESPERANDO_JUGADORES));
@@ -126,15 +124,13 @@ public class Modelo extends ObservableRemoto implements IModelo, Serializable {
 
     // GESTION USUARIOS-OBSERVADORES
     @Override
-    public IJugador conectarUsuario(String nombre) throws RemoteException{
-        IJugador jugador = new Jugador(nombre);
-        usuarios.add(jugador);
-        return jugador;
+    public void registrarUsuario(String nombre, String password) throws JugadorExistente, RemoteException {
+        usuarios.registrarse(nombre, password);
     }
 
     @Override
-    public List<IJugador> getUsuarios() throws RemoteException{
-        return usuarios;
+    public void iniciarSesion(String nombre, String password) throws JugadorNoExistente, RemoteException {
+        usuarios.iniciarSesion(nombre, password);
     }
 
     @Override
