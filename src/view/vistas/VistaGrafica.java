@@ -62,7 +62,6 @@ public class VistaGrafica implements IVista{
 
     @Override
     public void menu(){
-
         menu.setVisible(true);
     }
 

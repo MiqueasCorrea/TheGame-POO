@@ -7,6 +7,8 @@ import model.enums.Estados;
 import java.util.List;
 
 public interface IPartida {
+    int getCantidadJugadores_total_conectados();
+
     // GETTERS
     List<IJugador> getJugadoresEnLaPartida();
 
@@ -29,6 +31,8 @@ public interface IPartida {
     IJugador getTurno();
 
     EstadoPartida getEstado();
+
+    void incrementarCantidadJugadoresTotalConectados();
 
     // SETTERS
     void setEstado(EstadoPartida estado);

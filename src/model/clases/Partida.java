@@ -13,6 +13,7 @@ import java.util.function.BooleanSupplier;
 public class Partida implements IPartida, Serializable {
     private int id;
     private int cantidadJugadores;
+    private int cantidadJugadores_total_conectados;
     private int cantidadJugadores_actuales;
     private List<IJugador> jugadores_en_la_partida;
     private ICarta cartaAlta;
@@ -26,6 +27,7 @@ public class Partida implements IPartida, Serializable {
         this.cantidadJugadores = cantidadJugadores;
         jugadores_en_la_partida = new ArrayList<>();
         cantidadJugadores_actuales = 0;
+        cantidadJugadores_total_conectados = 0;
         cartaAlta = new Carta(10, EnumColor.PURPURA);
         cartaBaja = new Carta(1, EnumColor.PURPURA);
         turnos = new Turno(new LinkedList<>());
@@ -54,6 +56,11 @@ public class Partida implements IPartida, Serializable {
     @Override
     public int getCantidadJugadoresEnLaPartida(){
         return cantidadJugadores_actuales;
+    }
+
+    @Override
+    public int getCantidadJugadores_total_conectados() {
+        return cantidadJugadores_total_conectados;
     }
 
     @Override
@@ -103,6 +110,11 @@ public class Partida implements IPartida, Serializable {
     }
 
     @Override
+    public void incrementarCantidadJugadoresTotalConectados() {
+        this.cantidadJugadores_total_conectados ++;
+    }
+
+    @Override
     public void setEstado(EstadoPartida estado){
         this.estado = estado;
     }
@@ -133,6 +145,7 @@ public class Partida implements IPartida, Serializable {
         nuevo_jugador.setEstadoJugador(EstadoJugador.CONECTADO);
         jugadores_en_la_partida.add(nuevo_jugador);
         incrementarCantidadJugadoresActuales();
+        incrementarCantidadJugadoresTotalConectados();
     }
 
     @Override

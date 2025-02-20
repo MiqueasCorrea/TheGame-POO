@@ -13,9 +13,11 @@ import model.interfaces.IPartida;
 import view.interfaces.IVista;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.rmi.RemoteException;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class VistaConsola extends JFrame implements IVista {
@@ -29,6 +31,7 @@ public class VistaConsola extends JFrame implements IVista {
     private boolean action;
     private boolean actionCarta1;
     private boolean actionCarta2;
+    private boolean cerrado = false;
 
     public VistaConsola() throws RemoteException {
         this.controlador = new Controller();
@@ -47,7 +50,10 @@ public class VistaConsola extends JFrame implements IVista {
     @Override
     public void login() throws RemoteException{
         eliminarActionListeners();
+        eliminarWindowsClosingListeners();
+
         textArea.setText("The Game - Quick & Easy\n\n1. Iniciar Sesion\n2. Registrarse");
+        cerrarListener(false);
         enviar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -64,12 +70,15 @@ public class VistaConsola extends JFrame implements IVista {
     public void iniciarSesion(boolean fallo, String mensaje){
         limpiarTextoTextField();
         eliminarActionListeners();
+        eliminarWindowsClosingListeners();
+
 
         textArea.setText("The Game - Quick & Easy");
         if (fallo){
             textArea.append("\n" + mensaje);
         }
         textArea.append("\n\nIngrese nombre de usuario");
+        cerrarListener(false);
         enviar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -83,6 +92,8 @@ public class VistaConsola extends JFrame implements IVista {
     public void registrarse(boolean fallo, String mensaje){
         limpiarTextoTextField();
         eliminarActionListeners();
+        eliminarWindowsClosingListeners();
+
 
         textArea.setText("The Game - Quick & Easy");
         if (fallo){
@@ -90,6 +101,7 @@ public class VistaConsola extends JFrame implements IVista {
         }
 
         textArea.append("\n\nIngrese nombre de usuario a registrar");
+        cerrarListener(false);
         enviar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -103,7 +115,10 @@ public class VistaConsola extends JFrame implements IVista {
     public void pedirPasswordLogin(String nombre){
         limpiarTextoTextField();
         eliminarActionListeners();
+        eliminarWindowsClosingListeners();
+
         textArea.append("\nIngrese el password");
+        cerrarListener(false);
         enviar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -126,7 +141,10 @@ public class VistaConsola extends JFrame implements IVista {
     public void pedirPasswordRegistro(String nombre){
         limpiarTextoTextField();
         eliminarActionListeners();
+        eliminarWindowsClosingListeners();
+
         textArea.append("\nIngrese el password");
+        cerrarListener(false);
         enviar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -150,7 +168,10 @@ public class VistaConsola extends JFrame implements IVista {
         subtitulo.setText("Menú");
         limpiarTextoTextField();
         eliminarActionListeners();
+        eliminarWindowsClosingListeners();
+
         textArea.setText("The Game - Quick & Easy\n\n1. Jugar\n2. Ranking\n3. Reglas");
+        cerrarListener(false);
         enviar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -176,7 +197,10 @@ public class VistaConsola extends JFrame implements IVista {
         subtitulo.setText("Jugar");
         limpiarTextoTextField();
         eliminarActionListeners();
+        eliminarWindowsClosingListeners();
+
         textArea.setText("The Game - Quick & Easy\n\n1. Crear Partida\n2. Buscar Partida\n\n3. Volver");
+        cerrarListener(false);
         enviar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -203,6 +227,9 @@ public class VistaConsola extends JFrame implements IVista {
         textArea.setText("The Game - Quick & Easy\n\n2. Jugadores\n3. Jugadores\n4. Jugadores\n5. Volver");
         limpiarTextoTextField();
         eliminarActionListeners();
+        eliminarWindowsClosingListeners();
+
+        cerrarListener(false);
         enviar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -228,6 +255,8 @@ public class VistaConsola extends JFrame implements IVista {
     public void reglas() {
         limpiarTextoTextField();
         eliminarActionListeners();
+        eliminarWindowsClosingListeners();
+
         subtitulo.setText("Reglas");
         String reglasTexto = "The Game Quick & Easy \n" +
                 "Deberemos jugar cooperativamente las cincuenta cartas del mazo en dos pilas diferentes.\n" +
@@ -256,8 +285,11 @@ public class VistaConsola extends JFrame implements IVista {
 
         textArea.setText(reglasTexto);
         limpiarTextoTextField();
-
         eliminarActionListeners();
+        eliminarWindowsClosingListeners();
+
+
+        cerrarListener(false);
         enviar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -269,15 +301,52 @@ public class VistaConsola extends JFrame implements IVista {
 
     @Override
     public void buscarPartidas() throws RemoteException{
-        setEstado(Estados.EN_BUSCAR_PARTIDA);
-        encontrarPartidas();
+        subtitulo.setText("Buscando Partidas");
+
+        limpiarTextoTextField();
+        eliminarActionListeners();
+        eliminarWindowsClosingListeners();
+
+        textArea.setText("\n\n1. Todas las Partidas\n2. Mis Partidas\n\n3. Volver");
+
+        cerrarListener(false);
+        enviar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String opcionElegida = textField.getText();
+                switch (opcionElegida){
+                    case "1" -> {
+                        try {
+                            encontrarPartidas();
+                        } catch (RemoteException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                    case "2" -> {
+                        try {
+                            misPartidas();
+                        } catch (RemoteException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                    case "3" -> menu();
+                    default -> {}
+                }
+            }
+        });
+
+
     }
 
     private void encontrarPartidas() throws RemoteException {
-        subtitulo.setText("Buscando Partidas");
-        textArea.setText("Partidas actuales\n'salir' para volver al Menú\n\n");
+        setEstado(Estados.EN_BUSCAR_PARTIDA);
+        textArea.setText("Todas las Partidas\n'salir' para volver al Menú\n\n");
         limpiarTextoTextField();
         eliminarActionListeners();
+        eliminarWindowsClosingListeners();
+
+
+        cerrarListener(false);
         enviar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -317,6 +386,59 @@ public class VistaConsola extends JFrame implements IVista {
         });
     }
 
+    public void misPartidas() throws RemoteException{
+        setEstado(Estados.EN_BUSCAR_PARTIDA);
+        textArea.setText("Mis Partidas\n'salir' para volver al Menú\n\n");
+        limpiarTextoTextField();
+        eliminarActionListeners();
+        eliminarWindowsClosingListeners();
+
+
+        cerrarListener(false);
+        enviar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (textField.getText().equals("salir")){
+                    opciones();
+                }
+            }
+        });
+
+        int i = 1;
+        Map<Integer, IPartida> mis_partidas = controlador.getPartidasGuardadas(controlador.getNombreJugador());
+        for (Map.Entry<Integer, IPartida> partida : mis_partidas.entrySet()){
+            textArea.append("Partida " + i + ", Jugadores: " + partida.getValue().getCantidadJugadoresEnLaPartida() + " de " + partida.getValue().getCantidadJugadoresTotales() + " - " + partida.getValue().getEstado().name() + "\n");
+            i++;
+        }
+
+        textArea.append("\nDigite el número de la partida que te quieres unir.");
+
+        enviar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int numeroPartida;
+                try {
+                    numeroPartida = Integer.parseInt(textField.getText());
+                    if (numeroPartida >= 1 && numeroPartida <= mis_partidas.size()){
+                        List<IPartida> listaPartidas = new ArrayList<>(mis_partidas.values());
+                        IPartida partida = listaPartidas.get(numeroPartida-1);
+                        if (partida.getEstado() == EstadoPartida.EN_ESPERA){
+                            setEstado(Estados.EN_ESPERANDO_JUGADORES);
+                        } else {
+                            setEstado(Estados.EN_JUEGO);
+                        }
+                        controlador.reconectarJugador(partida.getId());
+                    }
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                } catch (NumberFormatException ex){
+                    System.err.println("NÚMERO INVALIDO");
+                }
+            }
+        });
+    }
+
+
     @Override
     public void crearPartida(int cantidadJugadores) throws RemoteException{
         controlador.crearPartida(cantidadJugadores);
@@ -327,6 +449,9 @@ public class VistaConsola extends JFrame implements IVista {
     public void esperandoJugadores() throws RemoteException{
         limpiarTextoTextField();
         eliminarActionListeners();
+        eliminarWindowsClosingListeners();
+
+        cerrarListener(true);
         subtitulo.setText("Esperando jugadores");
         mostrarJugadoresEnMesa();
     }
@@ -336,13 +461,13 @@ public class VistaConsola extends JFrame implements IVista {
         textArea.setText("JUGADORES " + "[" + partida.getCantidadJugadoresEnLaPartida() + " de " + partida.getCantidadJugadoresTotales() + "]\n");
         int i = 1;
         for (IJugador jugador : partida.getJugadoresEnLaPartida()){
-            textArea.append(i + ". " + jugador.getNombre() + "\n");
+            textArea.append(i + ". " + jugador.getNombre() + " (" + jugador.getEstadoJugador() + ")\n");
         }
         verificarIniciarPartida(partida);
     }
 
     private void verificarIniciarPartida(IPartida partida) throws RemoteException{
-        if (partida.getCantidadJugadoresTotales() == partida.getCantidadJugadoresEnLaPartida()){
+        if (partida.getCantidadJugadoresTotales() == partida.getCantidadJugadores_total_conectados()){
             empezarPartida();
         }
     }
@@ -386,7 +511,7 @@ public class VistaConsola extends JFrame implements IVista {
                     textArea.append("[" + carta2Vista.getNumero() + " " + carta2Vista.getColor().name() + "]");
                 } else {
                     actionCarta2 = false;
-                    textArea.append("(tomar carta del mazo)");
+                    textArea.append("\n(tomar carta del mazo)");
                 }
             }
         }
@@ -394,7 +519,7 @@ public class VistaConsola extends JFrame implements IVista {
 
     private void mostrarTurno() throws RemoteException {
         IJugador turno_jugador = controlador.getTurno();
-        textArea.setText("\t\tTurno de " + turno_jugador.getNombre());
+        textArea.setText("\t\tTurno de " + turno_jugador.getNombre() + " (" + turno_jugador.getEstadoJugador() + ")");
         if (turno_jugador.getNombre().equals(controlador.getNombreJugador())){
             textField.setEditable(true);
             action = true;
@@ -425,6 +550,10 @@ public class VistaConsola extends JFrame implements IVista {
         textArea.append("\n\nSelecciona una carta y la pila (por ejemplo, '1 alta' o '2 baja',\no escribe 'mazo' luego de tirar al menos una carta) ");
         limpiarTextoTextField();
         eliminarActionListeners();
+        eliminarWindowsClosingListeners();
+
+
+        cerrarListener(true);
         enviar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -438,8 +567,8 @@ public class VistaConsola extends JFrame implements IVista {
                                 throw new RuntimeException(ex);
                             }
                             try {
-                                if (!controlador.verificarGameOver()){
-                                    controlador.verificarGameWin();
+                                if (!controlador.verificarGameWin()){
+                                    controlador.verificarGameOver();
                                 }
                             } catch (RemoteException ex) {
                                 throw new RuntimeException(ex);
@@ -492,8 +621,12 @@ public class VistaConsola extends JFrame implements IVista {
     public void mostrarGameOver(){
         limpiarTextoTextField();
         eliminarActionListeners();
+        eliminarWindowsClosingListeners();
+
         textField.setEditable(true);
         textArea.append("\n\t\t--------GAME OVER--------\nDigite 'salir' para volver al menú.");
+
+        cerrarListener(false);
         enviar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -509,8 +642,13 @@ public class VistaConsola extends JFrame implements IVista {
     public void mostrarGameWin() throws RemoteException {
         limpiarTextoTextField();
         eliminarActionListeners();
+        eliminarWindowsClosingListeners();
+
         textField.setEditable(true);
         textArea.append("\n\t\t--------GAME WIN--------\nDigite 'salir' para volver al menú.");
+
+        cerrarListener(false);
+        controlador.actualizarRanking(controlador.getNombreJugador());
         enviar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -526,8 +664,11 @@ public class VistaConsola extends JFrame implements IVista {
     public void ranking() throws RemoteException {
         limpiarTextoTextField();
         eliminarActionListeners();
+        eliminarWindowsClosingListeners();
+
         textArea.setText("\t\tRANKING\n\n");
 
+        cerrarListener(false);
         enviar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -559,10 +700,16 @@ public class VistaConsola extends JFrame implements IVista {
         controlador.setId_partida_actual(-1);
     }
 
-    private void eliminarActionListeners() {
+    private void eliminarActionListeners(){
         ActionListener[] listeners = enviar.getActionListeners();
         for (ActionListener listener : listeners) {
             enviar.removeActionListener(listener);
+        }
+    }
+
+    private void eliminarWindowsClosingListeners(){
+        for (WindowListener wl : this.getWindowListeners()){
+            this.removeWindowListener(wl);
         }
     }
 
@@ -574,5 +721,22 @@ public class VistaConsola extends JFrame implements IVista {
     @Override
     public Controller getControlador() {
         return controlador;
+    }
+
+    public void cerrarListener(boolean in_game){
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    if (!cerrado){
+                        controlador.cerrar(in_game);
+                        cerrado = true;
+                    }
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+
     }
 }

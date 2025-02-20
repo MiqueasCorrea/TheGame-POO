@@ -97,8 +97,9 @@ public class Controller implements IControladorRemoto {
     }
 
     public void desconectarJugador() throws RemoteException {
-        modelo.desconectarJugador(nombre_jugador, id_partida_actual);
+        int id_anterior = id_partida_actual;
         setId_partida_actual(-1);
+        modelo.desconectarJugador(nombre_jugador, id_anterior);
     }
 
     public void cerrar(boolean in_game) throws RemoteException{
@@ -146,6 +147,10 @@ public class Controller implements IControladorRemoto {
 
             switch (evento.getEvento()) {
                 case CAMBIO_ESPERANDO_JUGADORES, DESCONEXION_E, RECONEXION_E -> {
+                    if (id_partida_actual == -1) {
+                        vista.menu();
+                        return;
+                    }
                     if (id_partida_actual != evento.getId()){return;}
                     if (vista.getEstado() == Estados.EN_ESPERANDO_JUGADORES) {
                         vista.esperandoJugadores();
@@ -157,6 +162,10 @@ public class Controller implements IControladorRemoto {
                     }
                 }
                 case ACTUALIZACION_CARTA, CAMBIO_TURNO, DESCONEXION_J, RECONEXION_J -> {
+                    if (id_partida_actual == -1) {
+                        vista.menu();
+                        return;
+                    }
                     if (id_partida_actual != evento.getId()){return;}
                     if (vista.getEstado() == Estados.EN_JUEGO) {
                         vista.mostrarPartida();

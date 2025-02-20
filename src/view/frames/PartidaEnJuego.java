@@ -16,6 +16,7 @@ import model.interfaces.IMazo;
 import model.interfaces.IPartida;
 import view.vistas.VistaGrafica;
 
+import java.awt.*;
 import java.rmi.RemoteException;
 import java.time.Instant;
 import java.util.List;
@@ -94,6 +95,8 @@ public class PartidaEnJuego extends javax.swing.JFrame {
         vPartidaEnJuego = new javax.swing.JPanel();
         mazo = new javax.swing.JButton();
         Volver = new javax.swing.JButton();
+        jBotonSalir = new javax.swing.JButton();
+        labelgameWin = new javax.swing.JLabel();
         labelgameOver = new javax.swing.JLabel();
         labelEstadoPartida = new javax.swing.JLabel();
         labelCartasRestantes = new javax.swing.JLabel();
@@ -161,6 +164,34 @@ public class PartidaEnJuego extends javax.swing.JFrame {
             }
         });
         vPartidaEnJuego.add(Volver, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 570, 120, 40));
+
+        jBotonSalir.setBackground(new java.awt.Color(255, 255, 255));
+        jBotonSalir.setForeground(new java.awt.Color(255, 255, 255));
+        jBotonSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/mesa/logoSalirPartida.png"))); // NOI18N
+        jBotonSalir.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jBotonSalirMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jBotonSalirMouseExited(evt);
+            }
+        });
+        jBotonSalir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+                    jBotonSalirActionPerformed(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        jBotonSalir.setOpaque(false);
+        jBotonSalir.setBackground(new Color(0,0,0,0));
+        vPartidaEnJuego.add(jBotonSalir, new org.netbeans.lib.awtextra.AbsoluteConstraints(1170, 10, 80, 80));
+
+        labelgameWin.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/menu/creador_partida/gameWin.png"))); // NOI18N
+        labelgameWin.setVisible(false);
+        vPartidaEnJuego.add(labelgameWin, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 40, -1, -1));
 
         labelgameOver.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/menu/creador_partida/gameOver.png"))); // NOI18N
         labelgameOver.setVisible(false);
@@ -307,8 +338,8 @@ public class PartidaEnJuego extends javax.swing.JFrame {
     private void mazoActionPerformed(java.awt.event.ActionEvent evt) throws RemoteException {//GEN-FIRST:event_mazoActionPerformed
         // TODO add your handling code here:
         getController().siguienteTurno();
-        if (!getController().verificarGameOver()){
-            getController().verificarGameWin();
+        if (!getController().verificarGameWin()){
+            getController().verificarGameOver();
         }
     }//GEN-LAST:event_mazoActionPerformed
 
@@ -331,6 +362,23 @@ public class PartidaEnJuego extends javax.swing.JFrame {
         getController().cerrar(true);
     }//GEN-LAST:event_formWindowClosing
 
+    private void jBotonSalirActionPerformed(java.awt.event.ActionEvent evt) throws RemoteException {//GEN-FIRST:event_jBotonSalirActionPerformed
+        // TODO add your handling code here:
+        setVisible(false);
+        getController().desconectarJugador();
+        vistaGrafica.resetPartidaEnJuego();
+    }//GEN-LAST:event_jBotonSalirActionPerformed
+
+    private void jBotonSalirMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jBotonSalirMouseEntered
+        // TODO add your handling code here:
+        jBotonSalir.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+    }//GEN-LAST:event_jBotonSalirMouseEntered
+
+    private void jBotonSalirMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jBotonSalirMouseExited
+        // TODO add your handling code here:
+        jBotonSalir.setBorder(null);
+    }//GEN-LAST:event_jBotonSalirMouseExited
+
     public void mostrarJugadoresEnMesa() throws RemoteException {
         IPartida partida = vistaGrafica.getControlador().getPartidaActual();
 
@@ -338,12 +386,13 @@ public class PartidaEnJuego extends javax.swing.JFrame {
         int miPosicion = partida.getPosicionJugador(vistaGrafica.getControlador().getNombreJugador());
 
         // Obtener el total de jugadores en la partida
-        int cantidadJugadores = partida.getCantidadJugadoresEnLaPartida();
+        int cantidadJugadores = partida.getCantidadJugadores_total_conectados();
 
         // Ajustar nombres en orden relativo a miPosicion
-        if (partida.getEstado() == EstadoPartida.EN_JUEGO){
-            cantidadJugadores = partida.getCantidadJugadoresTotales();
-        }
+        boolean mostrarConexion = true;
+        if (partida.getEstado() == EstadoPartida.EN_JUEGO) cantidadJugadores = partida.getCantidadJugadoresTotales();
+        if (partida.getEstado() == EstadoPartida.EN_ESPERA) mostrarConexion = false;
+
         switch (cantidadJugadores) {
             case 0,1 -> {
                 labelBackgroundMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/mesa/mesa1jugadores.png")));
@@ -351,23 +400,24 @@ public class PartidaEnJuego extends javax.swing.JFrame {
             case 2 -> {
                 nombreJugador2.setText(partida.getJugador((miPosicion + 1) % cantidadJugadores).getNombre());
                 labelBackgroundMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/mesa/mesa2jugadores.png")));
-                mostrarEstadoJugador(partida.getJugador((miPosicion + 1) % cantidadJugadores), nombreJugador2);
+                if (mostrarConexion) mostrarEstadoJugador(partida.getJugador((miPosicion + 1) % cantidadJugadores), nombreJugador2);
             }
             case 3 -> {
                 nombreJugador2.setText(partida.getJugador((miPosicion + 1) % cantidadJugadores).getNombre());
                 nombreJugador3.setText(partida.getJugador((miPosicion + 2) % cantidadJugadores).getNombre());
                 labelBackgroundMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/mesa/mesa3jugadores.png")));
-                mostrarEstadoJugador(partida.getJugador((miPosicion + 1) % cantidadJugadores), nombreJugador2);
-                mostrarEstadoJugador(partida.getJugador((miPosicion + 2) % cantidadJugadores), nombreJugador3);
+
+                if (mostrarConexion) mostrarEstadoJugador(partida.getJugador((miPosicion + 1) % cantidadJugadores), nombreJugador2);
+                if (mostrarConexion) mostrarEstadoJugador(partida.getJugador((miPosicion + 2) % cantidadJugadores), nombreJugador3);
             }
             case 4 -> {
                 nombreJugador2.setText(partida.getJugador((miPosicion + 1) % cantidadJugadores).getNombre());
                 nombreJugador3.setText(partida.getJugador((miPosicion + 2) % cantidadJugadores).getNombre());
                 nombreJugador4.setText(partida.getJugador((miPosicion + 3) % cantidadJugadores).getNombre());
                 labelBackgroundMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/mesa/mesa4jugadores.png")));
-                mostrarEstadoJugador(partida.getJugador((miPosicion + 1) % cantidadJugadores), nombreJugador2);
-                mostrarEstadoJugador(partida.getJugador((miPosicion + 2) % cantidadJugadores), nombreJugador3);
-                mostrarEstadoJugador(partida.getJugador((miPosicion + 3) % cantidadJugadores), nombreJugador4);
+                if (mostrarConexion) mostrarEstadoJugador(partida.getJugador((miPosicion + 1) % cantidadJugadores), nombreJugador2);
+                if (mostrarConexion) mostrarEstadoJugador(partida.getJugador((miPosicion + 2) % cantidadJugadores), nombreJugador3);
+                if (mostrarConexion) mostrarEstadoJugador(partida.getJugador((miPosicion + 3) % cantidadJugadores), nombreJugador4);
             }
             default -> throw new IllegalArgumentException("Cantidad de jugadores no soportada");
         }
@@ -384,7 +434,7 @@ public class PartidaEnJuego extends javax.swing.JFrame {
     }
 
     public void verificarIniciarPartida(IPartida partida) throws RemoteException {
-        if (partida.getCantidadJugadoresTotales() == partida.getCantidadJugadoresEnLaPartida() && !action){
+        if (partida.getCantidadJugadoresTotales() == partida.getCantidadJugadores_total_conectados() && !action){
             action = true;
             labelCartasRestantes.setVisible(true);
             vistaGrafica.empezarPartida();
@@ -464,6 +514,7 @@ public class PartidaEnJuego extends javax.swing.JFrame {
         this.getContentPane().setComponentZOrder(Volver, 0);
         labelgameOver.setVisible(true);
         Volver.setVisible(true);
+        jBotonSalir.setVisible(false);
     }
 
     public void mostrarGameWin() throws RemoteException {
@@ -471,8 +522,11 @@ public class PartidaEnJuego extends javax.swing.JFrame {
         draggable.setAction(false);
         draggable2.setAction(false);
         mazo.setVisible(false);
+        this.getContentPane().setComponentZOrder(labelgameWin, 0);
         this.getContentPane().setComponentZOrder(Volver, 0);
+        labelgameWin.setVisible(true);
         Volver.setVisible(true);
+        jBotonSalir.setVisible(false);
         vistaGrafica.getControlador().actualizarRanking(vistaGrafica.getControlador().getNombreJugador());
     }
 
@@ -517,12 +571,14 @@ public class PartidaEnJuego extends javax.swing.JFrame {
     private javax.swing.JLabel carta1;
     private javax.swing.JLabel carta2;
     private javax.swing.JLabel dedo;
+    private javax.swing.JButton jBotonSalir;
     private javax.swing.JLabel labelBackgroundMenu1;
     private javax.swing.JLabel labelCartaAlta;
     private javax.swing.JLabel labelCartaBaja;
     private javax.swing.JLabel labelCartasRestantes;
     private javax.swing.JLabel labelEstadoPartida;
     private javax.swing.JLabel labelgameOver;
+    private javax.swing.JLabel labelgameWin;
     private javax.swing.JButton mazo;
     private javax.swing.JLabel nombreJugador2;
     private javax.swing.JLabel nombreJugador3;
