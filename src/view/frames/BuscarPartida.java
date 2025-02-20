@@ -12,6 +12,7 @@ import view.vistas.VistaGrafica;
 
 import java.awt.*;
 import java.rmi.RemoteException;
+import java.util.Map;
 import javax.swing.*;
 
 /**
@@ -48,11 +49,22 @@ public class BuscarPartida extends javax.swing.JFrame {
         vOpcionesDeJuego = new javax.swing.JPanel();
         Volver = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        jButtonOtrasPartidas = new javax.swing.JButton();
+        jButtonMisPartidas = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         panelPartidas = new javax.swing.JPanel();
         labelBackgroundMenu1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                try {
+                    formWindowClosing(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
 
         vOpcionesDeJuego.setDoubleBuffered(false);
         vOpcionesDeJuego.setOpaque(false);
@@ -83,16 +95,67 @@ public class BuscarPartida extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("RETROTECH", 0, 36)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Buscar Partidas");
-        vOpcionesDeJuego.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 20, -1, -1));
+        vOpcionesDeJuego.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 20, -1, -1));
+
+        jButtonOtrasPartidas.setBackground(new java.awt.Color(51, 51, 51));
+        jButtonOtrasPartidas.setFont(new java.awt.Font("RETROTECH", 0, 18)); // NOI18N
+        jButtonOtrasPartidas.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonOtrasPartidas.setText("TODAS LAS PARTIDAS");
+        jButtonOtrasPartidas.setBorder(null);
+        jButtonOtrasPartidas.setFocusPainted(false);
+        jButtonOtrasPartidas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jButtonOtrasPartidasMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jButtonOtrasPartidasMouseExited(evt);
+            }
+        });
+        jButtonOtrasPartidas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+                    jButtonOtrasPartidasActionPerformed(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        vOpcionesDeJuego.add(jButtonOtrasPartidas, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 60, 360, 30));
+
+        jButtonMisPartidas.setBackground(new java.awt.Color(51, 51, 51));
+        jButtonMisPartidas.setFont(new java.awt.Font("RETROTECH", 0, 18)); // NOI18N
+        jButtonMisPartidas.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonMisPartidas.setText("MIS PARTIDAS");
+        jButtonMisPartidas.setBorder(null);
+        jButtonMisPartidas.setContentAreaFilled(false);
+        jButtonMisPartidas.setFocusPainted(false);
+        jButtonMisPartidas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jButtonMisPartidasMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jButtonMisPartidasMouseExited(evt);
+            }
+        });
+        jButtonMisPartidas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+                    jButtonMisPartidasActionPerformed(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        vOpcionesDeJuego.add(jButtonMisPartidas, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 60, 360, 30));
 
         panelPartidas.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         panelPartidas.setOpaque(false);
         panelPartidas.setLayout(new javax.swing.BoxLayout(panelPartidas, javax.swing.BoxLayout.Y_AXIS));
-        jScrollPane1.setOpaque(false);
-        jScrollPane1.getViewport().setOpaque(false);
         jScrollPane1.setViewportView(panelPartidas);
 
-        vOpcionesDeJuego.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 60, 730, 400));
+        jScrollPane1.setOpaque(false);
+        jScrollPane1.getViewport().setOpaque(false);
+        vOpcionesDeJuego.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 90, 730, 370));
 
         labelBackgroundMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/menu/buscador_partida/buscarPartida.gif"))); // NOI18N
         vOpcionesDeJuego.add(labelBackgroundMenu1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 960, 530));
@@ -134,6 +197,45 @@ public class BuscarPartida extends javax.swing.JFrame {
         Volver.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
     }//GEN-LAST:event_VolverMouseEntered
 
+    private void formWindowClosing(java.awt.event.WindowEvent evt) throws RemoteException {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        vistaGrafica.getControlador().cerrar(false);
+    }//GEN-LAST:event_formWindowClosing
+
+    private void jButtonMisPartidasActionPerformed(java.awt.event.ActionEvent evt) throws RemoteException {//GEN-FIRST:event_jButtonMisPartidasActionPerformed
+        // TODO add your handling code here:
+        jButtonOtrasPartidas.setContentAreaFilled(false);
+        jButtonMisPartidas.setContentAreaFilled(true);
+        misPartidas();
+    }//GEN-LAST:event_jButtonMisPartidasActionPerformed
+
+    private void jButtonOtrasPartidasActionPerformed(java.awt.event.ActionEvent evt) throws RemoteException {//GEN-FIRST:event_jButtonOtrasPartidasActionPerformed
+        // TODO add your handling code here:
+        jButtonMisPartidas.setContentAreaFilled(false);
+        jButtonOtrasPartidas.setContentAreaFilled(true);
+        encontrarPartidas();
+    }//GEN-LAST:event_jButtonOtrasPartidasActionPerformed
+
+    private void jButtonOtrasPartidasMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonOtrasPartidasMouseEntered
+        // TODO add your handling code here:
+        jButtonOtrasPartidas.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+    }//GEN-LAST:event_jButtonOtrasPartidasMouseEntered
+
+    private void jButtonMisPartidasMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonMisPartidasMouseEntered
+        // TODO add your handling code here:
+        jButtonMisPartidas.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+    }//GEN-LAST:event_jButtonMisPartidasMouseEntered
+
+    private void jButtonMisPartidasMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonMisPartidasMouseExited
+        // TODO add your handling code here:
+        jButtonMisPartidas.setBorder(null);
+    }//GEN-LAST:event_jButtonMisPartidasMouseExited
+
+    private void jButtonOtrasPartidasMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonOtrasPartidasMouseExited
+        // TODO add your handling code here:
+        jButtonOtrasPartidas.setBorder(null);
+    }//GEN-LAST:event_jButtonOtrasPartidasMouseExited
+
     public void encontrarPartidas() throws RemoteException{
         panelPartidas.removeAll();
         int i = 1;
@@ -169,6 +271,49 @@ public class BuscarPartida extends javax.swing.JFrame {
             });
             panelPartidas.add(button);
             i++;
+        }
+        panelPartidas.revalidate();
+        panelPartidas.repaint();
+    }
+
+    public void misPartidas() throws RemoteException {
+        panelPartidas.removeAll();
+        Map<Integer, IPartida> mis_partidas = vistaGrafica.getControlador().getPartidasGuardadas(vistaGrafica.getControlador().getNombreJugador());
+        int i = 1;
+        for (Map.Entry<Integer, IPartida> entry : mis_partidas.entrySet()){
+            JButton button = new JButton();
+            button.setBackground(new java.awt.Color(255, 255, 255));
+            button.setFont(new java.awt.Font("RETROTECH", 0, 36)); // NOI18N
+            button.setForeground(new java.awt.Color(255, 255, 255));
+            button.setBorder(null);
+            button.setContentAreaFilled(false);
+            button.setFocusPainted(false);
+            button.setText("Partida " + i + ", Jugadores: " + entry.getValue().getCantidadJugadoresEnLaPartida() + " de " + entry.getValue().getCantidadJugadoresTotales() + " - " + entry.getValue().getEstado().name());
+            button.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseEntered(java.awt.event.MouseEvent evt) {
+                    button.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+                }
+                public void mouseExited(java.awt.event.MouseEvent evt) {
+                    button.setBorder(null);
+                }
+            });
+            button.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    if (entry.getValue().getEstado() == EstadoPartida.EN_ESPERA){
+                        vistaGrafica.setEstado(Estados.EN_ESPERANDO_JUGADORES);
+                    } else {
+                        vistaGrafica.setEstado(Estados.EN_JUEGO);
+                    }
+                    setVisible(false);
+                    try {
+                        vistaGrafica.getControlador().reconectarJugador(entry.getValue().getId());
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+            i++;
+            panelPartidas.add(button);
         }
         panelPartidas.revalidate();
         panelPartidas.repaint();
@@ -211,6 +356,8 @@ public class BuscarPartida extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Volver;
+    private javax.swing.JButton jButtonMisPartidas;
+    private javax.swing.JButton jButtonOtrasPartidas;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel labelBackgroundMenu1;

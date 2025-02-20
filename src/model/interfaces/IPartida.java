@@ -1,5 +1,6 @@
 package model.interfaces;
 
+import model.enums.EstadoJugador;
 import model.enums.EstadoPartida;
 import model.enums.Estados;
 
@@ -31,6 +32,12 @@ public interface IPartida {
 
     // SETTERS
     void setEstado(EstadoPartida estado);
+
+    void setEstadoJugador(String nombre, EstadoJugador estadoJugador);
+
+    void incrementarCantidadJugadoresActuales();
+
+    void decrementarCantidadJugadoresActuales();
 
     // METODOS
     void agregarJugador(String jugador);

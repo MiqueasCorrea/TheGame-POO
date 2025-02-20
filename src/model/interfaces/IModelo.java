@@ -1,6 +1,7 @@
 package model.interfaces;
 
 import ar.edu.unlu.rmimvc.observer.IObservableRemoto;
+import ar.edu.unlu.rmimvc.observer.IObservadorRemoto;
 import model.excepciones.JugadorExistente;
 import model.excepciones.JugadorNoExistente;
 
@@ -40,4 +41,11 @@ public interface IModelo extends IObservableRemoto {
     void registrarUsuario(String nombre, String password) throws JugadorExistente, RemoteException;
 
     void iniciarSesion(String nombre, String password) throws JugadorNoExistente, RemoteException;
+    void desconectarJugador(String nombre_jugador, int id_partida) throws RemoteException;
+
+    void cerrar(IObservadorRemoto observador) throws RemoteException;
+
+    void reconectarJugador(String nombre_jugador, int id_partida) throws RemoteException;
+
+    Map<Integer, IPartida> getPartidasGuardadas(String nombre_jugador) throws RemoteException;
 }

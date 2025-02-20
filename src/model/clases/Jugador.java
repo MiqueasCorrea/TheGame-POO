@@ -1,6 +1,6 @@
 package model.clases;
 
-import model.extras.GeneradorUsuarioID;
+import model.enums.EstadoJugador;
 import model.interfaces.ICarta;
 import model.interfaces.IJugador;
 
@@ -14,6 +14,7 @@ public class Jugador implements IJugador, Serializable{
     private boolean carta1_en_mano;
     private boolean carta2_en_mano;
     private int cantidadCartasTiradas;
+    private EstadoJugador estadoJugador;
 
     public Jugador(String nombre) {
         this.nombre = nombre;
@@ -78,5 +79,15 @@ public class Jugador implements IJugador, Serializable{
     @Override
     public void setCantidadCartasTiradas(int cantidad) {
         this.cantidadCartasTiradas = cantidad;
+    }
+    
+    @Override
+    public EstadoJugador getEstadoJugador() {
+        return estadoJugador;
+    }
+
+    @Override
+    public void setEstadoJugador(EstadoJugador estadoJugador) {
+        this.estadoJugador = estadoJugador;
     }
 }

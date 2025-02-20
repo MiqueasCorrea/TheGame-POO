@@ -1,5 +1,7 @@
 package model.interfaces;
 
+import model.enums.EstadoJugador;
+
 public interface IJugador {
     // GETTERS
     public String getNombre();
@@ -26,4 +28,8 @@ public interface IJugador {
     void setCantidadCartasTiradas(int cantidad);
 
     void incrementarCartasTiradas();
+
+    EstadoJugador getEstadoJugador();
+
+    void setEstadoJugador(EstadoJugador estadoJugador);
 }

@@ -109,6 +109,8 @@ public class VistaGrafica implements IVista{
 
     @Override
     public void mostrarPartida() throws RemoteException{
+        partida_en_juego.setVisible(true);
+        partida_en_juego.mostrarJugadoresEnMesa();
         partida_en_juego.mostrarCartas();
         partida_en_juego.mostrarTurno();
         partida_en_juego.mostrarTablero();

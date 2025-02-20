@@ -1,6 +1,8 @@
 package model.clases;
 
+import ar.edu.unlu.rmimvc.observer.IObservadorRemoto;
 import ar.edu.unlu.rmimvc.observer.ObservableRemoto;
+import model.enums.EstadoJugador;
 import model.enums.EstadoPartida;
 import model.enums.Eventos;
 import model.excepciones.JugadorExistente;
@@ -17,12 +19,22 @@ import java.util.Map;
 public class Modelo extends ObservableRemoto implements IModelo, Serializable {
     private ISesion usuarios;
     private Map<Integer, IPartida> partidas;
+    private IPartidaGuardada partidas_guardadas;
     private IRanking ranking;
 
     public Modelo(){
         usuarios = new Sesion();
         partidas = new HashMap<>();
         ranking = new Ranking();
+        partidas_guardadas = new PartidaGuardada();
+        cargarPartidasPersistidas();
+    }
+
+    public void cargarPartidasPersistidas(){
+        Map<Integer, IPartida> partidas_g = partidas_guardadas.getPartidasGuardadas();
+        for (Map.Entry<Integer, IPartida> entry : partidas_g.entrySet()){
+            partidas.put(entry.getKey(), entry.getValue());
+        }
     }
 
     // GESTION PARTIDAS
@@ -106,6 +118,7 @@ public class Modelo extends ObservableRemoto implements IModelo, Serializable {
         if (partida.gameOver()){
             notificarObservadores(new ManejadorEventos(id_partida, Eventos.GAME_OVER));
             partidas.remove(id_partida);
+            borrarPartidaPersistida(id_partida);
             return true;
         }
         return false;
@@ -117,9 +130,14 @@ public class Modelo extends ObservableRemoto implements IModelo, Serializable {
         if (partida.gameWin()){
             notificarObservadores(new ManejadorEventos(id_partida, Eventos.GAME_WIN));
             partidas.remove(id_partida);
+            borrarPartidaPersistida(id_partida);
             return true;
         }
         return false;
+    }
+
+    private void borrarPartidaPersistida(int id_partida) throws RemoteException{
+        partidas_guardadas.borrarPartidaGuardada(id_partida);
     }
 
     // GESTION USUARIOS-OBSERVADORES
@@ -143,4 +161,42 @@ public class Modelo extends ObservableRemoto implements IModelo, Serializable {
         return ranking.getRanking();
     }
 
+    @Override
+    public void desconectarJugador(String nombre_jugador, int id_partida) throws RemoteException {
+        IPartida partida = getPartida(id_partida);
+        partida.setEstadoJugador(nombre_jugador, EstadoJugador.DESCONECTADO);
+        partida.decrementarCantidadJugadoresActuales();
+        partidas_guardadas.actualizar(partida);
+        if (partida.getEstado() == EstadoPartida.EN_ESPERA){
+            notificarObservadores(new ManejadorEventos(id_partida, Eventos.DESCONEXION_E));
+        } else {
+            notificarObservadores(new ManejadorEventos(id_partida, Eventos.DESCONEXION_J));
+        }
+    }
+
+    @Override
+    public void cerrar(IObservadorRemoto observador) throws RemoteException{
+        this.removerObservador(observador);
+    }
+
+    @Override
+    public void reconectarJugador(String nombre_jugador, int id_partida) throws RemoteException {
+        IPartida partida = partidas_guardadas.getPartidasGuardadas(nombre_jugador).get(id_partida);
+
+        partida.setEstadoJugador(nombre_jugador, EstadoJugador.CONECTADO);
+        partida.incrementarCantidadJugadoresActuales();
+        partidas_guardadas.actualizar(partida);
+        if (partida.getEstado() == EstadoPartida.EN_ESPERA){
+            notificarObservadores(new ManejadorEventos(id_partida, Eventos.RECONEXION_E));
+            System.out.println("entra a reconexion e");
+        } else {
+            System.out.println("entra a reconexion j");
+            notificarObservadores(new ManejadorEventos(id_partida, Eventos.RECONEXION_J));
+        }
+    }
+
+    @Override
+    public Map<Integer, IPartida> getPartidasGuardadas(String nombre_jugador) throws RemoteException{
+        return partidas_guardadas.getPartidasGuardadas(nombre_jugador);
+    }
 }

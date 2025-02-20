@@ -53,6 +53,15 @@ public class Login extends javax.swing.JFrame {
         labelBackground = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                try {
+                    formWindowClosing(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
 
         vLogin.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -164,6 +173,11 @@ public class Login extends javax.swing.JFrame {
     private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jPasswordField1ActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) throws RemoteException {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        vistaGrafica.getControlador().cerrar(false);
+    }//GEN-LAST:event_formWindowClosing
 
     private boolean verificarCampos(){
         if (!jTextFieldUsernameLogin1.getText().isBlank() && !jPasswordField1.getText().isBlank()){

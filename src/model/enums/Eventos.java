@@ -6,5 +6,9 @@ public enum Eventos {
     ACTUALIZACION_CARTA,
     CAMBIO_TURNO,
     GAME_OVER,
-    GAME_WIN
+    GAME_WIN,
+    DESCONEXION_E,
+    DESCONEXION_J,
+    RECONEXION_E,
+    RECONEXION_J
 }

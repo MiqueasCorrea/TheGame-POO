@@ -8,6 +8,9 @@
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
     <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
+  <Events>
+    <EventHandler event="windowClosing" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowClosing"/>
+  </Events>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -173,7 +176,7 @@
         <Component class="javax.swing.JLabel" name="jugador1">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/view/imagenes/menu/jugador1.png"/>
+              <Image iconType="3" name="/view/recursos/menu/creador_partida/jugador1.png"/>
             </Property>
           </Properties>
           <Constraints>
@@ -185,7 +188,7 @@
         <Component class="javax.swing.JLabel" name="jugador2">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/view/imagenes/menu/jugador2.png"/>
+              <Image iconType="3" name="/view/recursos/menu/creador_partida/jugador2.png"/>
             </Property>
           </Properties>
           <Constraints>
@@ -197,7 +200,7 @@
         <Component class="javax.swing.JLabel" name="jugador3">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/view/imagenes/menu/jugador3.png"/>
+              <Image iconType="3" name="/view/recursos/menu/creador_partida/jugador3.png"/>
             </Property>
           </Properties>
           <Constraints>
@@ -209,7 +212,7 @@
         <Component class="javax.swing.JLabel" name="jugador4">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/view/imagenes/menu/jugador4.png"/>
+              <Image iconType="3" name="/view/recursos/menu/creador_partida/jugador4.png"/>
             </Property>
           </Properties>
           <Constraints>

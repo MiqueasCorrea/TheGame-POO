@@ -1,6 +1,7 @@
 package model.clases;
 
 import model.enums.EnumColor;
+import model.enums.EstadoJugador;
 import model.enums.EstadoPartida;
 import model.extras.GeneradorPartidaID;
 import model.interfaces.*;
@@ -12,6 +13,7 @@ import java.util.function.BooleanSupplier;
 public class Partida implements IPartida, Serializable {
     private int id;
     private int cantidadJugadores;
+    private int cantidadJugadores_actuales;
     private List<IJugador> jugadores_en_la_partida;
     private ICarta cartaAlta;
     private ICarta cartaBaja;
@@ -23,6 +25,7 @@ public class Partida implements IPartida, Serializable {
         id = new GeneradorPartidaID().conseguirSiguienteID();
         this.cantidadJugadores = cantidadJugadores;
         jugadores_en_la_partida = new ArrayList<>();
+        cantidadJugadores_actuales = 0;
         cartaAlta = new Carta(10, EnumColor.PURPURA);
         cartaBaja = new Carta(1, EnumColor.PURPURA);
         turnos = new Turno(new LinkedList<>());
@@ -50,7 +53,7 @@ public class Partida implements IPartida, Serializable {
 
     @Override
     public int getCantidadJugadoresEnLaPartida(){
-        return jugadores_en_la_partida.size();
+        return cantidadJugadores_actuales;
     }
 
     @Override
@@ -104,11 +107,32 @@ public class Partida implements IPartida, Serializable {
         this.estado = estado;
     }
 
+    @Override
+    public void setEstadoJugador(String nombre, EstadoJugador estadoJugador){
+        for (IJugador jugador : jugadores_en_la_partida){
+            if (jugador.getNombre().equals(nombre)){
+                jugador.setEstadoJugador(estadoJugador);
+            }
+        }
+    }
+
+    @Override
+    public void incrementarCantidadJugadoresActuales(){
+        this.cantidadJugadores_actuales++;
+    }
+
+    @Override
+    public void decrementarCantidadJugadoresActuales(){
+        this.cantidadJugadores_actuales--;
+    }
+
     // METODOS
     @Override
     public void agregarJugador(String jugador){
         IJugador nuevo_jugador = new Jugador(jugador);
+        nuevo_jugador.setEstadoJugador(EstadoJugador.CONECTADO);
         jugadores_en_la_partida.add(nuevo_jugador);
+        incrementarCantidadJugadoresActuales();
     }
 
     @Override

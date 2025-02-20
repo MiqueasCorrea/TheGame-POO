@@ -46,6 +46,15 @@ public class Opciones extends javax.swing.JFrame {
         labelBackgroundMenu1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                try {
+                    formWindowClosing(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
 
         vOpciones.setDoubleBuffered(false);
         vOpciones.setOpaque(false);
@@ -187,6 +196,11 @@ public class Opciones extends javax.swing.JFrame {
         setVisible(false);
         vistaGrafica.menu();
     }//GEN-LAST:event_VolverActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) throws RemoteException {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        vistaGrafica.getControlador().cerrar(false);
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments

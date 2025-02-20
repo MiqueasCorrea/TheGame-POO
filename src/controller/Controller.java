@@ -18,7 +18,6 @@ import java.util.Map;
 
 public class Controller implements IControladorRemoto {
     private IModelo modelo;
-//    private IJugador jugador;
     private IVista vista;
     private int id_partida_actual;
     private String nombre_jugador;
@@ -64,7 +63,8 @@ public class Controller implements IControladorRemoto {
     }
 
     public IPartida getPartidaActual() throws RemoteException{
-        return modelo.getPartida(id_partida_actual);
+        IPartida partida = modelo.getPartida(id_partida_actual);
+        return partida;
     }
 
     public void empezarPartida() throws RemoteException{
@@ -96,16 +96,31 @@ public class Controller implements IControladorRemoto {
         return modelo.gameWin(id_partida_actual);
     }
 
+    public void desconectarJugador() throws RemoteException {
+        modelo.desconectarJugador(nombre_jugador, id_partida_actual);
+        setId_partida_actual(-1);
+    }
+
+    public void cerrar(boolean in_game) throws RemoteException{
+        if (in_game){
+            desconectarJugador();
+        }
+        modelo.cerrar(this);
+    }
+
+    public void reconectarJugador(int id_partida) throws RemoteException {
+        setId_partida_actual(id_partida);
+        modelo.reconectarJugador(nombre_jugador, id_partida);
+    }
+
     // GESTION USUARIOS-OBSERVADORES
     public void registrarUsuario(String nombre, String password) throws RemoteException, JugadorExistente {
         modelo.registrarUsuario(nombre, password);
-        System.out.println("test a ver si pasa igual");
         this.nombre_jugador = nombre;
     }
 
     public void iniciarSesion(String nombre, String password) throws RemoteException, JugadorNoExistente {
         modelo.iniciarSesion(nombre, password);
-        System.out.println("test a ver si pasa igual");
         this.nombre_jugador = nombre;
     }
 
@@ -121,14 +136,19 @@ public class Controller implements IControladorRemoto {
         return modelo.getRanking();
     }
 
+    public Map<Integer, IPartida> getPartidasGuardadas(String nombre_jugador) throws RemoteException{
+        return modelo.getPartidasGuardadas(nombre_jugador);
+    }
+
     @Override
     public void actualizar(IObservableRemoto iObservableRemoto, Object o) throws RemoteException {
         if (o instanceof ManejadorEventos evento) {
 
             switch (evento.getEvento()) {
-                case CAMBIO_ESPERANDO_JUGADORES -> {
+                case CAMBIO_ESPERANDO_JUGADORES, DESCONEXION_E, RECONEXION_E -> {
                     if (id_partida_actual != evento.getId()){return;}
                     if (vista.getEstado() == Estados.EN_ESPERANDO_JUGADORES) {
+                        System.out.println("llego al coso e");
                         vista.esperandoJugadores();
                     }
                 }
@@ -137,9 +157,10 @@ public class Controller implements IControladorRemoto {
                         vista.buscarPartidas();
                     }
                 }
-                case ACTUALIZACION_CARTA, CAMBIO_TURNO -> {
+                case ACTUALIZACION_CARTA, CAMBIO_TURNO, DESCONEXION_J, RECONEXION_J -> {
                     if (id_partida_actual != evento.getId()){return;}
                     if (vista.getEstado() == Estados.EN_JUEGO) {
+                        System.out.println("llego al coso");
                         vista.mostrarPartida();
                     }
                 }

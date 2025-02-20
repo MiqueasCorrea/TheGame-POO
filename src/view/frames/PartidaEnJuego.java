@@ -8,6 +8,8 @@ import controller.Controller;
 import model.clases.Carta;
 import model.clases.Jugador;
 import model.enums.EnumColor;
+import model.enums.EstadoJugador;
+import model.enums.EstadoPartida;
 import model.interfaces.ICarta;
 import model.interfaces.IJugador;
 import model.interfaces.IMazo;
@@ -109,6 +111,15 @@ public class PartidaEnJuego extends javax.swing.JFrame {
         labelBackgroundMenu1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                try {
+                    formWindowClosing(evt);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
 
         vPartidaEnJuego.setDoubleBuffered(false);
         vPartidaEnJuego.setOpaque(false);
@@ -314,6 +325,11 @@ public class PartidaEnJuego extends javax.swing.JFrame {
         vistaGrafica.opciones();
     }//GEN-LAST:event_VolverActionPerformed
 
+    private void formWindowClosing(java.awt.event.WindowEvent evt) throws RemoteException {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        getController().cerrar(true);
+    }//GEN-LAST:event_formWindowClosing
+
     public void mostrarJugadoresEnMesa() throws RemoteException {
         IPartida partida = vistaGrafica.getControlador().getPartidaActual();
 
@@ -325,23 +341,29 @@ public class PartidaEnJuego extends javax.swing.JFrame {
 
         // Ajustar nombres en orden relativo a miPosicion
         switch (cantidadJugadores) {
-            case 1 -> {
+            case 0,1 -> {
                 labelBackgroundMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/mesa/mesa1jugadores.png")));
             }
             case 2 -> {
                 nombreJugador2.setText(partida.getJugador((miPosicion + 1) % cantidadJugadores).getNombre());
                 labelBackgroundMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/mesa/mesa2jugadores.png")));
+                mostrarEstadoJugador(partida.getJugador((miPosicion + 1) % cantidadJugadores), nombreJugador2);
             }
             case 3 -> {
                 nombreJugador2.setText(partida.getJugador((miPosicion + 1) % cantidadJugadores).getNombre());
                 nombreJugador3.setText(partida.getJugador((miPosicion + 2) % cantidadJugadores).getNombre());
                 labelBackgroundMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/mesa/mesa3jugadores.png")));
+                mostrarEstadoJugador(partida.getJugador((miPosicion + 1) % cantidadJugadores), nombreJugador2);
+                mostrarEstadoJugador(partida.getJugador((miPosicion + 2) % cantidadJugadores), nombreJugador3);
             }
             case 4 -> {
                 nombreJugador2.setText(partida.getJugador((miPosicion + 1) % cantidadJugadores).getNombre());
                 nombreJugador3.setText(partida.getJugador((miPosicion + 2) % cantidadJugadores).getNombre());
                 nombreJugador4.setText(partida.getJugador((miPosicion + 3) % cantidadJugadores).getNombre());
                 labelBackgroundMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/mesa/mesa4jugadores.png")));
+                mostrarEstadoJugador(partida.getJugador((miPosicion + 1) % cantidadJugadores), nombreJugador2);
+                mostrarEstadoJugador(partida.getJugador((miPosicion + 2) % cantidadJugadores), nombreJugador3);
+                mostrarEstadoJugador(partida.getJugador((miPosicion + 3) % cantidadJugadores), nombreJugador4);
             }
             default -> throw new IllegalArgumentException("Cantidad de jugadores no soportada");
         }
@@ -349,8 +371,16 @@ public class PartidaEnJuego extends javax.swing.JFrame {
         verificarIniciarPartida(partida);
     }
 
+    public void mostrarEstadoJugador(IJugador jugador, JLabel label){
+        switch (jugador.getEstadoJugador()){
+            case EstadoJugador.CONECTADO -> label.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, java.awt.Color.green, java.awt.Color.green, java.awt.Color.green, java.awt.Color.green));
+            case EstadoJugador.DESCONECTADO -> label.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, java.awt.Color.red, java.awt.Color.red, java.awt.Color.red, java.awt.Color.red));
+            default -> throw new IllegalArgumentException("Estado del jugador invalido.");
+        }
+    }
+
     public void verificarIniciarPartida(IPartida partida) throws RemoteException {
-        if (partida.getCantidadJugadoresTotales() == partida.getCantidadJugadoresEnLaPartida()){
+        if (partida.getCantidadJugadoresTotales() == partida.getCantidadJugadoresEnLaPartida() && partida.getEstado() == EstadoPartida.EN_ESPERA){
             labelCartasRestantes.setVisible(true);
             vistaGrafica.empezarPartida();
         }
