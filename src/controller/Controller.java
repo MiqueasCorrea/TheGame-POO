@@ -148,7 +148,6 @@ public class Controller implements IControladorRemoto {
                 case CAMBIO_ESPERANDO_JUGADORES, DESCONEXION_E, RECONEXION_E -> {
                     if (id_partida_actual != evento.getId()){return;}
                     if (vista.getEstado() == Estados.EN_ESPERANDO_JUGADORES) {
-                        System.out.println("llego al coso e");
                         vista.esperandoJugadores();
                     }
                 }
@@ -160,7 +159,6 @@ public class Controller implements IControladorRemoto {
                 case ACTUALIZACION_CARTA, CAMBIO_TURNO, DESCONEXION_J, RECONEXION_J -> {
                     if (id_partida_actual != evento.getId()){return;}
                     if (vista.getEstado() == Estados.EN_JUEGO) {
-                        System.out.println("llego al coso");
                         vista.mostrarPartida();
                     }
                 }

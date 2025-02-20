@@ -31,6 +31,7 @@ public class PartidaEnJuego extends javax.swing.JFrame {
     private List<JPanel> handZone = new ArrayList<>();
     private Draggable draggable;
     private Draggable draggable2;
+    private boolean action = false;
 
     /**
      * Creates new form BuscarPartida
@@ -340,6 +341,9 @@ public class PartidaEnJuego extends javax.swing.JFrame {
         int cantidadJugadores = partida.getCantidadJugadoresEnLaPartida();
 
         // Ajustar nombres en orden relativo a miPosicion
+        if (partida.getEstado() == EstadoPartida.EN_JUEGO){
+            cantidadJugadores = partida.getCantidadJugadoresTotales();
+        }
         switch (cantidadJugadores) {
             case 0,1 -> {
                 labelBackgroundMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/recursos/mesa/mesa1jugadores.png")));
@@ -380,7 +384,8 @@ public class PartidaEnJuego extends javax.swing.JFrame {
     }
 
     public void verificarIniciarPartida(IPartida partida) throws RemoteException {
-        if (partida.getCantidadJugadoresTotales() == partida.getCantidadJugadoresEnLaPartida() && partida.getEstado() == EstadoPartida.EN_ESPERA){
+        if (partida.getCantidadJugadoresTotales() == partida.getCantidadJugadoresEnLaPartida() && !action){
+            action = true;
             labelCartasRestantes.setVisible(true);
             vistaGrafica.empezarPartida();
         }
