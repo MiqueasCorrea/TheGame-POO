@@ -13,7 +13,7 @@ import model.interfaces.IModelo;
 
 public class AppServidor {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws RemoteException{
         ArrayList<String> ips = Util.getIpDisponibles();
         String ip = "127.0.0.1";
 //        String ip = (String) JOptionPane.showInputDialog(
@@ -33,7 +33,7 @@ public class AppServidor {
 //                null,
 //                8888
 //        );
-        IModelo modelo = new Modelo();
+        IModelo modelo = Modelo.getInstancia();
         Servidor servidor = new Servidor(ip, Integer.parseInt(port));
         try {
             servidor.iniciar(modelo);

@@ -28,10 +28,6 @@ public class Controller implements IControladorRemoto {
         this.vista = vista;
     }
 
-    public int getId_partida_actual(){
-        return id_partida_actual;
-    }
-
     @Override
     public <T extends IObservableRemoto> void setModeloRemoto(T modelo){
         this.modelo = (IModelo) modelo;
@@ -78,10 +74,6 @@ public class Controller implements IControladorRemoto {
 
     public void jugarTurno(int zonasMano, int zonasCentro) throws RemoteException {
         modelo.jugarTurno(id_partida_actual, zonasMano, zonasCentro);
-    }
-
-    public IMazo getMazo() throws RemoteException{
-        return modelo.getMazo(id_partida_actual);
     }
 
     public void siguienteTurno() throws RemoteException {

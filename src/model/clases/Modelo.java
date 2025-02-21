@@ -17,24 +17,25 @@ import java.util.List;
 import java.util.Map;
 
 public class Modelo extends ObservableRemoto implements IModelo, Serializable {
+    private static IModelo instancia = null;
     private ISesion usuarios;
     private Map<Integer, IPartida> partidas;
     private IPartidaGuardada partidas_guardadas;
     private IRanking ranking;
 
-    public Modelo(){
-        usuarios = new Sesion();
-        partidas = new HashMap<>();
-        ranking = new Ranking();
-        partidas_guardadas = new PartidaGuardada();
-        cargarPartidasPersistidas();
+    public static IModelo getInstancia() throws RemoteException{
+        if (instancia == null) {
+            instancia = new Modelo();
+        }
+        return instancia;
     }
 
-    public void cargarPartidasPersistidas(){
-        Map<Integer, IPartida> partidas_g = partidas_guardadas.getPartidasGuardadas();
-        for (Map.Entry<Integer, IPartida> entry : partidas_g.entrySet()){
-            partidas.put(entry.getKey(), entry.getValue());
-        }
+    private Modelo(){
+        usuarios = Sesion.getInstancia();
+        partidas = new HashMap<>();
+        ranking = Ranking.getInstancia();
+        partidas_guardadas = PartidaGuardada.getInstancia();
+        cargarPartidasPersistidas();
     }
 
     // GESTION PARTIDAS
@@ -45,6 +46,13 @@ public class Modelo extends ObservableRemoto implements IModelo, Serializable {
         this.partidas.put(nueva_partida.getId(), nueva_partida);
         notificarObservadores(new ManejadorEventos(nueva_partida.getId(), Eventos.CAMBIO_BUSCAR_PARTIDA));
         return nueva_partida;
+    }
+
+    private void cargarPartidasPersistidas(){
+        Map<Integer, IPartida> partidas_g = partidas_guardadas.getPartidasGuardadas();
+        for (Map.Entry<Integer, IPartida> entry : partidas_g.entrySet()){
+            partidas.put(entry.getKey(), entry.getValue());
+        }
     }
 
     @Override

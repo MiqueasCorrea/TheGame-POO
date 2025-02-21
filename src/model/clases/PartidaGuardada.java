@@ -3,6 +3,7 @@ package model.clases;
 import model.interfaces.IJugador;
 import model.interfaces.IPartida;
 import model.interfaces.IPartidaGuardada;
+import model.interfaces.ISesion;
 import serializacion.Serializador;
 
 import java.io.Serializable;
@@ -10,11 +11,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PartidaGuardada implements IPartidaGuardada, Serializable {
+    private static IPartidaGuardada instancia = null;
     private static final long serialVersionUID = 1L;
     private Serializador serializador = new Serializador("src/data/partidas_guardadas.dat");
     private Map<Integer, IPartida> partidas_guardadas;
 
-    public PartidaGuardada(){
+    public static IPartidaGuardada getInstancia(){
+        if (instancia == null){
+            instancia = new PartidaGuardada();
+        }
+        return instancia;
+    }
+
+    private PartidaGuardada(){
         Object pg_obj = serializador.readFirstObject();
 //        partidas_guardadas = new HashMap<>();
 //        serializador.writeOneObject(partidas_guardadas);

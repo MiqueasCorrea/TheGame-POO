@@ -1,6 +1,7 @@
 package model.clases;
 
 import model.interfaces.IRanking;
+import model.interfaces.ISesion;
 import serializacion.Serializador;
 
 import java.io.Serializable;
@@ -8,11 +9,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Ranking implements IRanking, Serializable {
+    private static IRanking instancia = null;
     private static final long serialVersionUID = 1L;
     private Serializador serializador = new Serializador("src/data/ranking.dat");
     private Map<String, Integer> ranking;
 
-    public Ranking() {
+    public static IRanking getInstancia(){
+        if (instancia == null){
+            instancia = new Ranking();
+        }
+        return instancia;
+    }
+
+    private Ranking() {
         Object rankObj = serializador.readFirstObject();
 //        ranking = new HashMap<>();
 //        serializador.writeOneObject(ranking);

@@ -12,11 +12,19 @@ import java.util.List;
 import java.util.Map;
 
 public class Sesion implements ISesion, Serializable {
+    private static ISesion instancia = null;
     private static final long serialVersionUID = 1L;
     private Serializador serializador = new Serializador("src/data/sesiones.dat");
     private Map<String, String> usuarios;
 
-    public Sesion() {
+    public static ISesion getInstancia(){
+        if (instancia == null){
+            instancia = new Sesion();
+        }
+        return instancia;
+    }
+
+    private Sesion() {
         Object usuariosObj = serializador.readFirstObject();
 //        usuarios = new HashMap<>();
 //        serializador.writeOneObject(usuarios);
