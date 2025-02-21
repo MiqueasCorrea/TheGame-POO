@@ -16,6 +16,20 @@ import view.vistas.VistaGrafica;
 public class AppCliente {
 
     public static void main(String[] args) throws RemoteException {
+        String[] opciones = {"Vista Consola", "Vista Grafica"};
+        String seleccion = (String) JOptionPane.showInputDialog(
+                null,
+                "Seleccione un tipo de vista",
+                "TIPO VISTA",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                opciones,
+                opciones[0]
+        );
+
+        boolean vista_grafica = "Vista Grafica".equals(seleccion);
+        boolean vista_consola = !vista_grafica;
+
         ArrayList<String> ips = Util.getIpDisponibles();
         String ip = "127.0.0.1";
 //        String ip = (String) JOptionPane.showInputDialog(
@@ -52,8 +66,12 @@ public class AppCliente {
 //                null,
 //                8888
 //        );
-//        IVista vista = new VistaGrafica();
-        IVista vista = new VistaConsola();
+        IVista vista;
+        if (vista_grafica){
+            vista = new VistaGrafica();
+        } else{
+            vista = new VistaConsola();
+        }
         Cliente c = new Cliente(ip, Integer.parseInt(port), ipServidor, Integer.parseInt(portServidor));
         vista.login();
         try {
