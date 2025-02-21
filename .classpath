@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/LibreriaRMIMVC"/>
+	<classpathentry exported="true" kind="lib" path="/home/miqueas/Documentos/AbsoluteLayout-RELEASE200.jar"/>
+	<classpathentry kind="output" path="out/production/TheGame-POO"/>
+</classpath>

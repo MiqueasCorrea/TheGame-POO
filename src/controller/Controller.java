@@ -1,81 +1,181 @@
 package controller;
-import model.*;
+import ar.edu.unlu.rmimvc.cliente.IControladorRemoto;
+import ar.edu.unlu.rmimvc.observer.IObservableRemoto;
+import model.clases.ManejadorEventos;
+import model.clases.Modelo;
+import model.clases.Jugador;
+import model.clases.Partida;
 import model.enums.Estados;
 import model.enums.Eventos;
-import model.interfaces.IObserver;
-import view.IVista;
+import model.excepciones.JugadorExistente;
+import model.excepciones.JugadorNoExistente;
+import model.interfaces.*;
+import view.interfaces.IVista;
+
+import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Map;
 
-public class Controller implements IObserver {
-    private Juego modelo;
-    private Jugador jugador;
+public class Controller implements IControladorRemoto {
+    private IModelo modelo;
     private IVista vista;
+    private int id_partida_actual;
+    private String nombre_jugador;
 
-    public Controller(Juego modelo) {
-        this.modelo = modelo;
-    }
+    public Controller(){}
 
-    public Juego getModelo(){
-        return this.modelo;
-    }
-
-    public List<Partida> getPartidas(){
-        return this.modelo.getPartidas();
-    }
     public void setVista(IVista vista) {
         this.vista = vista;
     }
 
-    public void conectarJugador(String nombre){ // set Jugador
-        this.jugador = this.modelo.conectarUsuario(nombre, this);
+    @Override
+    public <T extends IObservableRemoto> void setModeloRemoto(T modelo){
+        this.modelo = (IModelo) modelo;
     }
 
-    public Jugador getJugador(){
-        return jugador;
+    // GESTION PARTIDAS
+    public List<IPartida> getPartidas() throws RemoteException {
+        return this.modelo.getPartidas();
     }
 
-
-    public void agregarPartida(Partida partida){
-        this.modelo.agregarPartida(partida);
+    public void crearPartida(int cantidadJugadores) throws RemoteException {
+        IPartida partida= modelo.crearPartida(cantidadJugadores);
+        setId_partida_actual(partida.getId());
     }
 
+    public void agregarJugadorAPartida(int id_partida) throws RemoteException{
+        vista.setEstado(Estados.EN_ESPERANDO_JUGADORES);
+        setId_partida_actual(id_partida);
+        modelo.agregarJugadorAPartida(id_partida, nombre_jugador);
+    }
+
+    public void agregarJugadorAPartida() throws RemoteException{
+        vista.setEstado(Estados.EN_ESPERANDO_JUGADORES);
+        modelo.agregarJugadorAPartida(id_partida_actual, nombre_jugador);
+    }
+
+    public void setId_partida_actual(int id) {
+        this.id_partida_actual = id;
+    }
+
+    public IPartida getPartidaActual() throws RemoteException{
+        IPartida partida = modelo.getPartida(id_partida_actual);
+        return partida;
+    }
+
+    public void empezarPartida() throws RemoteException{
+        vista.setEstado(Estados.EN_JUEGO);
+        modelo.empezarPartida(id_partida_actual);
+    }
+
+    public IJugador getTurno() throws RemoteException{
+        return modelo.getTurno(id_partida_actual);
+    }
+
+    public void jugarTurno(int zonasMano, int zonasCentro) throws RemoteException {
+        modelo.jugarTurno(id_partida_actual, zonasMano, zonasCentro);
+    }
+
+    public void siguienteTurno() throws RemoteException {
+        modelo.siguienteTurno(id_partida_actual);
+    }
+
+    public boolean verificarGameOver() throws RemoteException {
+        return modelo.gameOver(id_partida_actual);
+    }
+
+    public boolean verificarGameWin() throws RemoteException {
+        return modelo.gameWin(id_partida_actual);
+    }
+
+    public void desconectarJugador() throws RemoteException {
+        int id_anterior = id_partida_actual;
+        setId_partida_actual(-1);
+        modelo.desconectarJugador(nombre_jugador, id_anterior);
+    }
+
+    public void cerrar(boolean in_game) throws RemoteException{
+        if (in_game){
+            desconectarJugador();
+        }
+        modelo.cerrar(this);
+    }
+
+    public void reconectarJugador(int id_partida) throws RemoteException {
+        setId_partida_actual(id_partida);
+        modelo.reconectarJugador(nombre_jugador, id_partida);
+    }
+
+    // GESTION USUARIOS-OBSERVADORES
+    public void registrarUsuario(String nombre, String password) throws RemoteException, JugadorExistente {
+        modelo.registrarUsuario(nombre, password);
+        this.nombre_jugador = nombre;
+    }
+
+    public void iniciarSesion(String nombre, String password) throws RemoteException, JugadorNoExistente {
+        modelo.iniciarSesion(nombre, password);
+        this.nombre_jugador = nombre;
+    }
+
+    public String getNombreJugador(){
+        return nombre_jugador;
+    }
+
+    public void actualizarRanking(String nombre) throws RemoteException {
+        modelo.actualizarRanking(nombre);
+    }
+
+    public Map<String, Integer> getRanking() throws RemoteException {
+        return modelo.getRanking();
+    }
+
+    public Map<Integer, IPartida> getPartidasGuardadas(String nombre_jugador) throws RemoteException{
+        return modelo.getPartidasGuardadas(nombre_jugador);
+    }
 
     @Override
-    public void update(Partida partida, Object arg){
-        if (arg instanceof Eventos){
-            switch ((Eventos) arg){
-                case CAMBIO_LISTA_ESPERA:
-                    if (this.vista.getEstado() == Estados.EN_BUSCAR_PARTIDA){
-                        this.vista.mostrarBuscarPartidas();
+    public void actualizar(IObservableRemoto iObservableRemoto, Object o) throws RemoteException {
+        if (o instanceof ManejadorEventos evento) {
+
+            switch (evento.getEvento()) {
+                case CAMBIO_ESPERANDO_JUGADORES, DESCONEXION_E, RECONEXION_E -> {
+                    if (id_partida_actual == -1) {
+                        vista.menu();
+                        return;
                     }
-                    break;
-                case SE_UNIO_JUGADOR:
-                    if (this.vista.getEstado() == Estados.EN_SALA_ESPERA){
-                        this.vista.mostrarEsperandoJugadores(partida);
+                    if (id_partida_actual != evento.getId()){return;}
+                    if (vista.getEstado() == Estados.EN_ESPERANDO_JUGADORES) {
+                        vista.esperandoJugadores();
                     }
-                    break;
-                case ACTUALIZACION_CARTA:
-                    if (this.vista.getEstado() == Estados.EN_JUEGO){
-                        this.vista.mostrarJuego(partida);
+                }
+                case CAMBIO_BUSCAR_PARTIDA -> {
+                    if (vista.getEstado() == Estados.EN_BUSCAR_PARTIDA) {
+                        vista.buscarPartidas();
                     }
-                    break;
-                case CAMBIO_TURNO:
-                    if (this.vista.getEstado() == Estados.EN_JUEGO){
-                        this.vista.mostrarJuego(partida);
+                }
+                case ACTUALIZACION_CARTA, CAMBIO_TURNO, DESCONEXION_J, RECONEXION_J -> {
+                    if (id_partida_actual == -1) {
+                        vista.menu();
+                        return;
                     }
-                    break;
-                case GAME_OVER:
-                    if (this.vista.getEstado() == Estados.EN_JUEGO){
-                        this.vista.gameOver(partida);
+                    if (id_partida_actual != evento.getId()){return;}
+                    if (vista.getEstado() == Estados.EN_JUEGO) {
+                        vista.mostrarPartida();
                     }
-                    break;
-                case GAME_WIN:
-                    if (this.vista.getEstado() == Estados.EN_JUEGO){
-                        this.vista.gameWin(partida);
+                }
+                case GAME_OVER -> {
+                    if (id_partida_actual != evento.getId()){return;}
+                    if (vista.getEstado() == Estados.EN_JUEGO) {
+                        vista.mostrarGameOver();
                     }
-                    break;
-                default:
-                    break;
+                }
+                case GAME_WIN -> {
+                    if (id_partida_actual != evento.getId()){return;}
+                    if (vista.getEstado() == Estados.EN_JUEGO) {
+                        vista.mostrarGameWin();
+                    }
+                }
+                default -> {}
             }
         }
     }
