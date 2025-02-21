@@ -48,13 +48,6 @@ public class Modelo extends ObservableRemoto implements IModelo, Serializable {
         return nueva_partida;
     }
 
-    private void cargarPartidasPersistidas(){
-        Map<Integer, IPartida> partidas_g = partidas_guardadas.getPartidasGuardadas();
-        for (Map.Entry<Integer, IPartida> entry : partidas_g.entrySet()){
-            partidas.put(entry.getKey(), entry.getValue());
-        }
-    }
-
     @Override
     public List<IPartida> getPartidas() throws RemoteException{
         return new ArrayList<>(partidas.values());
@@ -146,6 +139,13 @@ public class Modelo extends ObservableRemoto implements IModelo, Serializable {
 
     private void borrarPartidaPersistida(int id_partida) throws RemoteException{
         partidas_guardadas.borrarPartidaGuardada(id_partida);
+    }
+
+    private void cargarPartidasPersistidas(){
+        Map<Integer, IPartida> partidas_g = partidas_guardadas.getPartidasGuardadas();
+        for (Map.Entry<Integer, IPartida> entry : partidas_g.entrySet()){
+            partidas.put(entry.getKey(), entry.getValue());
+        }
     }
 
     // GESTION USUARIOS-OBSERVADORES
